@@ -19,6 +19,10 @@ void UndoList::tempdo(string cmd) {
     string tempName = filename + to_string(++undoCount);
     UndoNode tempNode(cmd, tempName);
     stack.push(tempNode);
+    ofstream file;
+    file.open(tempName);
+    file << "Need to add in the tables here";
+    file.close();
 }
 
 string UndoList::undo() {
