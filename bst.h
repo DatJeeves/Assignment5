@@ -1,0 +1,32 @@
+#ifndef BST_H
+#define BST_H
+#include "treeNode.h"
+
+using namespace std;
+
+class BST {
+public:
+	//Constructor
+	BST();
+	//assumes template class has a virtual destructor
+	~BST();
+	//functions to augment the tree
+	void insert(int key, int data);
+	bool search(int data);
+	bool deleteNode(int key);
+	void deleteTree(TreeNode* curr);
+
+	//functions to check the tree metrics
+	TreeNode* getMin();
+	TreeNode* getMax();
+	bool isEmpty();
+
+	//extra help functions
+	TreeNode* getSuccessor(TreeNode* next);
+	void printTree(TreeNode* node);
+private:
+	TreeNode* root;
+
+};
+
+#endif
