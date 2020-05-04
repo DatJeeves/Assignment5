@@ -27,7 +27,18 @@ void UndoList::tempdo(string cmd) {
 
 string UndoList::undo() {
     UndoNode temp;
+    string line;
+
     temp = stack.pop();
+    fstream stream(temp.filename);
+    if (stream.good()) {
+        while (!stream.eof()) {
+            //stream >> line;
+            getline(stream, line);
+        }
+    }
+    cout << line << endl;
+    stream.close();
     return temp.command;
 }
 
