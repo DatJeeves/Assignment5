@@ -82,9 +82,10 @@ bool BST::isEmpty() {
 //***A FAILED SEARCH***
 //***HAVE TO OVERLOAD FOR DIFF TYPES
 //have to change for self balancing
-void BST::insert(int key, int value) {
-	TreeNode* node = new TreeNode(key, value);
-	if (search(key)) {
+void BST::insert(Student* s) {
+	int key = s->studentID;
+	TreeNode* node = new TreeNode(s);
+	if (search(node->key)) {
 		cout << "Value already exists." << endl;
 		return;
 	}
@@ -100,7 +101,7 @@ void BST::insert(int key, int value) {
 
 		while (true) {
 			parent = curr;
-			if (value < curr->value) {
+			if (key < curr->key) {
 				//go left
 				curr = curr->left;
 				if (curr == NULL) {
@@ -122,22 +123,22 @@ void BST::insert(int key, int value) {
 }
 
 //***HAVE TO OVERLOAD FOR DIFF TYPES
-bool BST::search(int value) {
+bool BST::search(int k) {
 	if (isEmpty())
 		return false;
 	else {
 		//not an empty tree
 		TreeNode* current = root;
 		//***HAVE TO IMPLEMENT = FOR DIFF TYPES
-		while (current->value != value) {
-			if (value < current->value)
+		while (current->key != k) {
+			if (k < current->key)
 				current = current->left;
 			else
 				current = current->right;
 			//didn't find the value
 			if (current == NULL) { 
-				cout << "Did not find the value: " << 
-					value << "." << endl;
+				cout << "Did not find the ID: " << 
+					k << "." << endl;
 				return false;
 			}
 		}

@@ -6,18 +6,20 @@ using namespace std;
 //treenode implementation
 TreeNode::TreeNode() {
 	key = 0;
-	value = 10;
+	value;
 	color = false;
 	left = NULL;
 	right = NULL;
 }
-TreeNode::TreeNode(int k, int v) {
-	key = k;
-	value = v;
+TreeNode::TreeNode(Student* s) {
+	key = s->studentID;
+	value = s;
 	color = false;
 	left = NULL;
 	right = NULL;
 }
 TreeNode::~TreeNode() {
 	//have delete for diff types
+	//in this test we delete student
+	delete value;
 }
