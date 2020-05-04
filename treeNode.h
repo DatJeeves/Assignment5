@@ -16,6 +16,10 @@ public:
 	//vars for node data and to search on
 	int key;
 	int value;
+
+	// Student
+	// Student currentStudent
+
 	/* 
 	******SUPER IMPORTANT**********
 		FALSE = RED

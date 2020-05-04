@@ -84,6 +84,9 @@ bool BST::isEmpty() {
 //have to change for self balancing
 void BST::insert(int key, int value) {
 	TreeNode* node = new TreeNode(key, value);
+
+	// If we have found a ky in the tree, then we know its already there.
+	// Should we replace the original value with the new value or leave it ?
 	if (search(key)) {
 		cout << "Value already exists." << endl;
 		return;
