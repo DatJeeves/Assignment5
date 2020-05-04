@@ -4,22 +4,27 @@
 using namespace std;
 
 //treenode implementation
-TreeNode::TreeNode() {
+template<typename T>
+TreeNode<T>::TreeNode() {
 	key = 0;
-	value;
+	data;
 	color = false;
 	left = NULL;
 	right = NULL;
 }
-TreeNode::TreeNode(Student* s) {
-	key = s->studentID;
-	value = s;
+
+template<typename T>
+TreeNode<T>::TreeNode(int k, T* record) {
+	key = k;
+	data = record;
 	color = false;
 	left = NULL;
 	right = NULL;
 }
-TreeNode::~TreeNode() {
+
+template<typename T>
+TreeNode<T>::~TreeNode() {
 	//have delete for diff types
 	//in this test we delete student
-	delete value;
+	delete data;
 }

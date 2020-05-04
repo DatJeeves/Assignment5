@@ -3,7 +3,7 @@
 #include "student.h"
 
 using namespace std;
-
+template<typename T>
 class TreeNode {
 public:
 	//Constructors & Destructor 
@@ -11,13 +11,16 @@ public:
 	/*has a key-value pair so can search on id number
 	and have it's particular data*/
 	//TreeNode(int k, int value);
-	TreeNode(Student* s);
+
+	TreeNode(int k, T* record);
 	~TreeNode();
 	//have virtual destructor for student/faculty
 
 	//vars for node data and to search on
 	int key;
-	Student* value;
+
+	T* data;
+
 	/* 
 	******SUPER IMPORTANT**********
 		FALSE = RED
