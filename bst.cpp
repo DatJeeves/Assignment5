@@ -226,6 +226,10 @@ bool BST::deleteNode(int k) {
 	}
 }
 
+void BST::setColor(TreeNode* node, bool c) {
+	node->color = c;
+}
+
 TreeNode* BST::getSuccessor(TreeNode* d) {
 	//the parameter d represents the node to be deleted
 	TreeNode* current = d->right;

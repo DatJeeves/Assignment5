@@ -16,6 +16,9 @@ public:
 	bool deleteNode(int key);
 	void deleteTree(TreeNode* curr);
 
+	//red-black functions
+	void setColor(TreeNode* node, bool color);
+
 	//functions to check the tree metrics
 	TreeNode* getMin();
 	TreeNode* getMax();

@@ -16,6 +16,12 @@ public:
 	//vars for node data and to search on
 	int key;
 	int value;
+	/* 
+	******SUPER IMPORTANT**********
+		FALSE = RED
+		TRUE = BLACK
+	*/
+	bool color;
 	TreeNode* left;
 	TreeNode* right;
 };
