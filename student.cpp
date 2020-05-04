@@ -14,7 +14,7 @@ Student::Student() {
 	
 }
 
-Student::Student(int studentID, int advisorID, double gpa, std::string name, std::string level, std::string major)
+Student::Student(int studentID, int advisorID, double gpa, string name, string level, string major)
 {
 
 	this->studentID = studentID;
