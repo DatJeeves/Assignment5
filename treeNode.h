@@ -6,7 +6,7 @@ using namespace std;
 
 class TreeNode {
 public:
-	//Constructors & Destructor
+	//Constructors & Destructor 
 	TreeNode();
 	/*has a key-value pair so can search on id number
 	and have it's particular data*/
