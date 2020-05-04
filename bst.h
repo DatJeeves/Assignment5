@@ -11,8 +11,8 @@ public:
 	//assumes template class has a virtual destructor
 	~BST();
 	//functions to augment the tree
-	void insert(int key, int data);
-	bool search(int data);
+	void insert(Student* s);
+	bool search(int k);
 	bool deleteNode(int key);
 	void deleteTree(TreeNode* curr);
 
