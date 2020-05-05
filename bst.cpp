@@ -12,12 +12,12 @@ BST<T>::BST() {
 template<typename T>
 BST<T>::~BST() {
 	//we do this to leverage reccursion
-	TreeNode<T>* curr;
-	deleteTree(curr);
+	T* curr;
+//	deleteTree(curr);
 }
 
 template<typename T>
-void BST<T>::deleteTree(TreeNode<T>* curr) {
+void BST<T>::deleteTree(T* curr) {
 	//referenced: https://www.geeksforgeeks.org/write-a-c-program-to-delete-a-tree/
 	//traversial var
 	curr = root;
@@ -40,7 +40,7 @@ void BST<T>::deleteTree(TreeNode<T>* curr) {
 
 //will have to change for self balancing
 template<typename T>
-void BST<T>::printTree(TreeNode<T>* node) {
+void BST<T>::printTree(T* node) {
 	if (node == NULL) {
 		return;
 	}
@@ -50,12 +50,12 @@ void BST<T>::printTree(TreeNode<T>* node) {
 }
 
 template<typename T>
-TreeNode<T>* BST<T>::getMax() {
+T* BST<T>::getMax() {
 	//go all the way to the right
 	if (root == NULL) {
 		return NULL;
 	}
-	TreeNode<T>* curr = root;
+	T* curr = root;
 	while (curr->right != NULL) {
 		curr = curr->right;
 	}
@@ -63,12 +63,12 @@ TreeNode<T>* BST<T>::getMax() {
 }
 
 template<typename T>
-TreeNode<T>* BST<T>::getMin() {
+T* BST<T>::getMin() {
 	//go all the way to the left
 	if (root == NULL) {
 		return NULL;
 	}
-	TreeNode<T>* curr = root;
+	T* curr = root;
 	while (curr->left != NULL) {
 		curr = curr->left;
 	}
@@ -89,28 +89,34 @@ bool BST<T>::isEmpty() {
 //***HAVE TO OVERLOAD FOR DIFF TYPES
 //have to change for self balancing
 template<typename T>
-void BST<T>::insert(TreeNode<T>* node) {
-	if (search(node->key)) {
+void BST<T>::insert(T node) {
+	cout << " In insert with the node key is " << node.key << endl;
+	if (search(node.key)) {
 		cout << "Value already exists." << endl;
 		return;
 	}
+
+
 	//can't have duplicate keys so check for it
 	if (isEmpty()) {
+		cout << "Its empty tree " << endl;
 		//empty tree
-		root = node;
+		root = &node;
+		cout << "set the root to this node " << endl;
 	}
 	else {
+		cout << "Its not an empty tree " << endl;
 		//not an empty tree
-		TreeNode<T>* curr = root; //start at the root
-		TreeNode<T>* parent;
+		T* curr = root; //start at the root
+		T* parent;
 
 		while (true) {
 			parent = curr;
-			if (node->key < curr->key) {
+			if (node.key < curr->key) {
 				//go left
 				curr = curr->left;
 				if (curr == NULL) {
-					parent->left = node;
+					parent->left = &node;
 					break;
 				}
 			}
@@ -118,7 +124,7 @@ void BST<T>::insert(TreeNode<T>* node) {
 				//go right
 				curr = curr->right;
 				if (curr == NULL) {
-					parent->right = node;
+					parent->right = &node;
 					break;
 				}
 			}
@@ -133,8 +139,10 @@ bool BST<T>::search(int k) {
 		return false;
 	else {
 		//not an empty tree
-		TreeNode<T>* current = root;
+		T* current = root;
+		cout << "current node key = " << current->key << " looking for " << k << endl;
 		while (current->key != k) {
+			cout << "current node key = " << current->key << " looking for " << k << endl;
 			if (k < current->key)
 				current = current->left;
 			else
@@ -154,8 +162,8 @@ template<typename T>
 bool BST<T>::deleteNode(int k) {
 	if (isEmpty())
 		return false;
-	TreeNode<T>* parent = root;
-	TreeNode<T>* current = root;
+	T* parent = root;
+	T* current = root;
 	bool isLeft = true;
 
 	while (current->key != k) {
@@ -210,7 +218,7 @@ bool BST<T>::deleteNode(int k) {
 	else {
 		//node to be deleted has two children
 
-		TreeNode<T>* successor = getSuccessor(current);
+		T* successor = getSuccessor(current);
 		if (current == root) {
 			root = successor;
 		}
@@ -234,8 +242,8 @@ bool BST<T>::deleteNode(int k) {
 
 //****Assumes you already called search to see if the node exists****
 template<typename T>
-TreeNode<T>* BST<T>::returnNode(int k) {
-	TreeNode<T>* current = root;
+T* BST<T>::returnNode(int k) {
+	T* current = root;
 	while (current->key != k) {
 		if (k < current->key)
 			current = current->left;
@@ -252,7 +260,7 @@ TreeNode<T>* BST<T>::returnNode(int k) {
 }
 
 template<typename T>
-void BST<T>::reColor(TreeNode<T>* node, bool c) {
+void BST<T>::reColor(T* node, bool c) {
 	//Black -> Red
 	if (c == true)
 		c = false;
@@ -263,11 +271,11 @@ void BST<T>::reColor(TreeNode<T>* node, bool c) {
 }
 
 template<typename T>
-TreeNode<T>* BST<T>::getSuccessor(TreeNode<T>* d) {
+T* BST<T>::getSuccessor(T* d) {
 	//the parameter d represents the node to be deleted
-	TreeNode<T>* current = d->right;
-	TreeNode<T>* sp = d;
-	TreeNode<T>* successor = d;
+	T* current = d->right;
+	T* sp = d;
+	T* successor = d;
 
 	while (current != NULL) {
 		sp = successor;

@@ -11,25 +11,25 @@ public:
 	//assumes template class has a virtual destructor
 	~BST();
 	//functions to augment the tree
-	void insert(TreeNode<T>* node);
+	void insert(T node);
 	bool search(int k);
 	bool deleteNode(int key);
-	void deleteTree(TreeNode<T>* curr);
-	TreeNode<T>* returnNode(int key);
+	void deleteTree(T* curr);
+	T* returnNode(int key);
 
 	//red-black functions
-	void reColor(TreeNode<T>* node, bool color);
+	void reColor(T* node, bool color);
 
 	//functions to check the tree metrics
-	TreeNode<T>* getMin();
-	TreeNode<T>* getMax();
+	T* getMin();
+	T* getMax();
 	bool isEmpty();
 
 	//extra help functions
-	TreeNode<T>* getSuccessor(TreeNode<T>* next);
-	void printTree(TreeNode<T>* node);
+	T* getSuccessor(T* next);
+	void printTree(T* node);
 private:
-	TreeNode<T>* root;
+	T* root;
 
 };
 
