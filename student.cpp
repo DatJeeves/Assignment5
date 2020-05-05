@@ -73,5 +73,17 @@ bool Student::isEqual(std::string major, bool a) {
 		return false;
 }
 
+void Student::printDetails() {
+	cout << endl;
+	cout << "---------" << endl;
+	cout << "Student: " << name << endl;
+	cout << "Student ID: " << studentID << endl;
+	cout << "Advisor ID: " << advisorID << endl;
+	cout << "GPA: " << gpa << endl;
+	cout << "Grade: " << level << endl;
+	cout << "Major: " << major << endl;
+	cout << "---------" << endl;
+	cout << endl;
+}
 
 

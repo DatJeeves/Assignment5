@@ -22,7 +22,7 @@ public:
 	bool isEqual(std::string level, int a);
 	bool isEqual(std::string major, bool a);
 	
-	
+	void printDetails();
 
 	//student vars
 	int advisorID;
