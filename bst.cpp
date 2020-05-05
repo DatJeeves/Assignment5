@@ -89,42 +89,53 @@ bool BST<T>::isEmpty() {
 //***HAVE TO OVERLOAD FOR DIFF TYPES
 //have to change for self balancing
 template<typename T>
-void BST<T>::insert(T node) {
-	cout << " In insert with the node key is " << node.key << endl;
-	if (search(node.key)) {
+void BST<T>::insert(T* node) {
+	cout << " In insert with the node key is " << node->key << endl;
+	if (search(node->key)) {
 		cout << "Value already exists." << endl;
 		return;
 	}
-
+	cout << "Did not find the key in search" << endl;
 
 	//can't have duplicate keys so check for it
 	if (isEmpty()) {
 		cout << "Its empty tree " << endl;
 		//empty tree
-		root = &node;
-		cout << "set the root to this node " << endl;
+		root = node;
+		node->left = NULL;
+		node->right = NULL;
+		cout << "Set the root to this node key value is " << node->key << endl << endl;
 	}
-	else {
-		cout << "Its not an empty tree " << endl;
+	else {		
 		//not an empty tree
 		T* curr = root; //start at the root
 		T* parent;
 
+		cout << endl << "Finding where to insert starting at the root with key " << root->key << endl;
 		while (true) {
 			parent = curr;
-			if (node.key < curr->key) {
-				//go left
+			if (node->key < curr->key) {
+				//go left	
+				cout << "Going left as current key is " << curr->key << " and I am " << node->key << endl;
 				curr = curr->left;
 				if (curr == NULL) {
-					parent->left = &node;
+					cout << "Added to the left " << node->key << endl << endl;
+					parent->left = node;
+					node->left = NULL;
+					node->right = NULL;
 					break;
 				}
+				
 			}
 			else {
 				//go right
+				cout << "Going right as current key is " << curr->key << " and I am " << node->key << endl;
 				curr = curr->right;
 				if (curr == NULL) {
-					parent->right = &node;
+					cout << "Added to the right " << node->key<< endl;
+					parent->right = node;
+					node->left = NULL;
+					node->right = NULL;
 					break;
 				}
 			}
@@ -135,26 +146,37 @@ void BST<T>::insert(T node) {
 
 template<typename T>
 bool BST<T>::search(int k) {
-	if (isEmpty())
+
+	cout << endl << "IN SEARCH " << endl;
+	if (isEmpty()) {
+		cout << "empty tree so return false on search" << endl;
 		return false;
+	}
 	else {
 		//not an empty tree
-		T* current = root;
-		cout << "current node key = " << current->key << " looking for " << k << endl;
+		T* current = root;		
 		while (current->key != k) {
-			cout << "current node key = " << current->key << " looking for " << k << endl;
-			if (k < current->key)
+			if (k < current->key) {
+				cout << " My current key is " << current->key << " input key is " << k << endl;
 				current = current->left;
-			else
+				cout << "going left  " << endl;
+			}
+			else {
+				cout << " My current key is " << current->key << " input key is " << k << endl;
 				current = current->right;
+				cout << "going right " << endl;
+			}
 			//didn't find the value
 			if (current == NULL) {
 				cout << "Did not find the ID: " <<
 					k << "." << endl;
 				return false;
 			}
+			cout << "next value will be " << current->key << endl;
 		}
+		cout << "I am out of the while loop " << current->key << " was looking for " << k << endl;
 	}
+
 	return true;
 }
 
