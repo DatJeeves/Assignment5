@@ -7,11 +7,11 @@ using namespace std;
 class Person {
 public:
 	Person();
-	Person(int ID, string name, string level);
 	~Person();
 	/*Parameters added with different types to overload isEqual.
 	They are not used in the functions, just to distinguish each
 	one.*/
+	void setPerson(int ID, string name, string level);
 	bool isEqual(int ID);
 	int getId();
 	void setId(int Id);

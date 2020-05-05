@@ -1,10 +1,12 @@
 #ifndef STUDENT_H
 #define STUDENT_H
 #include <string>
+#include "person.cpp"
 
 using namespace std;
 
-class Student {
+// Inherits a base class Person
+class Student : public Person {
 public:
 	Student();
 	Student(int studentID, int advisorID, double gpa, std::string name, std::string level, std::string major);
@@ -23,11 +25,8 @@ public:
 	
 
 	//student vars
-	int studentID;
 	int advisorID;
 	double gpa;
-	std::string name;
-	std::string level;
 	std::string major;
 	
 	

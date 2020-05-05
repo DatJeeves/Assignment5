@@ -10,7 +10,7 @@ Person::Person() {
 	string level = "";
 }
 
-Person::Person(int PersonID, string name, string level)
+void Person::setPerson(int PersonID, string name, string level)
 {
 
 	this->PersonID = PersonID;
