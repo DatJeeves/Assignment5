@@ -28,6 +28,8 @@ public:
 	//extra help functions
 	T* getSuccessor(T* next);
 	void printTree(T* node);
+	void printPrettyTree(T* node, string tab);
+	void printTree();
 private:
 	T* root;
 

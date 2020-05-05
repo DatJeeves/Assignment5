@@ -1,5 +1,6 @@
 #include "bst.h"
 #include <iostream>
+#include <sstream>
 
 using namespace std;
 
@@ -47,6 +48,35 @@ void BST<T>::printTree(T* node) {
 	printTree(node->left);
 	cout << node->key << endl;
 	printTree(node->right);
+}
+
+template<typename T>
+void BST<T>::printPrettyTree(T* p, string tab)
+{
+	if (p != NULL) {
+		if (p->right) {			
+			printPrettyTree(p->right, tab+"    ");
+		}
+		
+		cout << tab << ' ';
+		
+		if (p->right) cout << " /\n" << tab << ' ';
+		std::cout << p->key << "\n ";
+		if (p->left) {
+			cout << tab << ' ' << " \\\n";
+			
+			printPrettyTree(p->left, tab+"    ");
+		}
+	}
+}
+
+template<typename T>
+void BST<T>::printTree() {
+	if (isEmpty()) {
+		return;
+	}
+
+	printPrettyTree(root, "  ");
 }
 
 template<typename T>
