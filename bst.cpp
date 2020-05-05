@@ -63,9 +63,9 @@ void BST<T>::printPrettyTree(T* p, string tab)
 		if (p->right) cout << " /\n" << tab << ' ';
 		std::cout << p->key << "\n ";
 		if (p->left) {
-			cout << tab << ' ' << " \\\n";
+			cout  << ' ' << " \\\n";
 			
-			printPrettyTree(p->left, tab+"    ");
+			printPrettyTree(p->left, " ");
 		}
 	}
 }
