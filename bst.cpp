@@ -275,7 +275,7 @@ T* BST<T>::returnNode(int k) {
 		if (current == NULL) {
 			cout << "Did not find the ID: " <<
 				k << "." << endl;
-			return false;
+			return NULL;
 		}
 	}
 	return current;
