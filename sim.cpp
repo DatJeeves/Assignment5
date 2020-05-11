@@ -422,8 +422,8 @@ void Sim::AddStudent(List<string>* mylist, int sid, string name, int newfid, dou
 	s->setStudent(sid, newfid, gpa, name, level, major);
 	TreeNode<Student>* studentNode = new TreeNode<Student>(sid, s);
 	studentTree.insert(studentNode);
-	AddToAdvisor(mylist,sid, newfid);
 	AddtoUndo(mylist, "d", 1, s->getCSV());
+	AddToAdvisor(mylist,sid, newfid);
 }
 
 void Sim::AddFaculty(List<string>* mylist) {
