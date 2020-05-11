@@ -23,9 +23,18 @@ TreeNode<T>::TreeNode(int k, T* record) {
 	right = NULL;
 }
 
+
+template<typename T>
+void TreeNode<T>::print() {
+	// Assumes data has a print method
+	data.printDetails();
+}
+
 template<typename T>
 TreeNode<T>::~TreeNode() {
 	//have delete for diff types
 	//in this test we delete student
 	delete data;
 }
+
+

@@ -2,6 +2,7 @@
 #define FACULTY_H
 #include <string>
 #include "person.h"
+#include "list.h"
 
 using namespace std;
 
@@ -9,7 +10,9 @@ using namespace std;
 class Faculty : public Person {
 public:
 	Faculty();
-	Faculty(int FacultyID,std::string name, std::string level, std::string dept /* , list of students*/);
+	void setFaculty(int FacultyID,std::string name, std::string level, std::string dept);
+	void printDetails();
+	string getCSV();
 	~Faculty();
 	/*Parameters added with different types to overload isEqual.
 	They are not used in the functions, just to distinguish each
@@ -20,7 +23,7 @@ public:
 	string dept;
 
 	// list of students ;
-	
+	List<int> advisees;
 	
 };
 

@@ -12,6 +12,7 @@ public:
 	~BST();
 	//functions to augment the tree
 	void insert(T* node);
+	T*  getRoot();
 	bool search(int k);
 	bool deleteNode(int key);
 	void deleteTree(T* curr);
@@ -24,14 +25,17 @@ public:
 	T* getMin();
 	T* getMax();
 	bool isEmpty();
+	int getSize();
 
 	//extra help functions
 	T* getSuccessor(T* next);
 	void printTree(T* node);
 	void printPrettyTree(T* node, string tab);
 	void printTree();
+	void copyNode(T* newNode, T* fromNode);
 private:
 	T* root;
+	int size = 0;
 
 };
 

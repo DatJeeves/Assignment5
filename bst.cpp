@@ -46,7 +46,7 @@ void BST<T>::printTree(T* node) {
 		return;
 	}
 	printTree(node->left);
-	cout << node->key << endl;
+	node->data->printDetails();
 	printTree(node->right);
 }
 
@@ -76,7 +76,8 @@ void BST<T>::printTree() {
 		return;
 	}
 
-	printPrettyTree(root, "  ");
+	//printPrettyTree(root, "  ");
+	printTree(root);
 }
 
 template<typename T>
@@ -120,12 +121,9 @@ bool BST<T>::isEmpty() {
 //have to change for self balancing
 template<typename T>
 void BST<T>::insert(T* node) {
-	cout << " In insert with the node key is " << node->key << endl;
 	if (search(node->key)) {
-		cout << "Value already exists." << endl;
 		return;
 	}
-	cout << "Did not find the key in search" << endl;
 
 	//can't have duplicate keys so check for it
 	if (isEmpty()) {
@@ -134,38 +132,35 @@ void BST<T>::insert(T* node) {
 		root = node;
 		node->left = NULL;
 		node->right = NULL;
-		cout << "Set the root to this node key value is " << node->key << endl << endl;
+		++size;
 	}
 	else {		
 		//not an empty tree
 		T* curr = root; //start at the root
 		T* parent;
 
-		cout << endl << "Finding where to insert starting at the root with key " << root->key << endl;
 		while (true) {
 			parent = curr;
 			if (node->key < curr->key) {
 				//go left	
-				cout << "Going left as current key is " << curr->key << " and I am " << node->key << endl;
 				curr = curr->left;
 				if (curr == NULL) {
-					cout << "Added to the left " << node->key << endl << endl;
 					parent->left = node;
 					node->left = NULL;
 					node->right = NULL;
+					++size;
 					break;
 				}
 				
 			}
 			else {
 				//go right
-				cout << "Going right as current key is " << curr->key << " and I am " << node->key << endl;
 				curr = curr->right;
 				if (curr == NULL) {
-					cout << "Added to the right " << node->key<< endl;
 					parent->right = node;
 					node->left = NULL;
 					node->right = NULL;
+					++size;
 					break;
 				}
 			}
@@ -177,9 +172,7 @@ void BST<T>::insert(T* node) {
 template<typename T>
 bool BST<T>::search(int k) {
 
-	cout << endl << "IN SEARCH " << endl;
 	if (isEmpty()) {
-		cout << "empty tree so return false on search" << endl;
 		return false;
 	}
 	else {
@@ -187,24 +180,16 @@ bool BST<T>::search(int k) {
 		T* current = root;		
 		while (current->key != k) {
 			if (k < current->key) {
-				cout << " My current key is " << current->key << " input key is " << k << endl;
 				current = current->left;
-				cout << "going left  " << endl;
 			}
 			else {
-				cout << " My current key is " << current->key << " input key is " << k << endl;
 				current = current->right;
-				cout << "going right " << endl;
 			}
 			//didn't find the value
 			if (current == NULL) {
-				cout << "Did not find the ID: " <<
-					k << "." << endl;
 				return false;
 			}
-			cout << "next value will be " << current->key << endl;
 		}
-		cout << "I am out of the while loop " << current->key << " was looking for " << k << endl;
 	}
 
 	return true;
@@ -219,6 +204,7 @@ bool BST<T>::deleteNode(int k) {
 	bool isLeft = true;
 
 	while (current->key != k) {
+		//cout << "Current key is " << current->key << " keep looping" << endl;
 		parent = current;
 		if (k < current->key) {
 			isLeft = true;
@@ -232,20 +218,28 @@ bool BST<T>::deleteNode(int k) {
 			return false;
 	}
 	//if we make it here, we found the value, now we delete
-		//check leaf node, children and L or R node
+	//check leaf node, children and L or R node
+	// cout << "current key is " << current->key << " which matches " << k << endl;
 
-		//node is a leaf
 	if (current->left == NULL && current->right == NULL) {
 		//then have a leaf treenode
+		//cout << "we have a leaf node" << endl;
 		if (current == root) {
 			root = NULL;
+			--size;
+			//cout << "current is root" << endl;
 		}
 		else if (isLeft) {
 			parent->left = NULL;
-
+			//cout << "current is left" << endl;
+			free(current);
+			--size;
 		}
 		else {
-			parent->right == NULL;
+			parent->right = NULL;
+			//cout << "current is right" << endl;
+			free(current);
+			--size;
 		}
 	}
 	//here is whether on left or right, inside it is ab the children
@@ -258,14 +252,16 @@ bool BST<T>::deleteNode(int k) {
 		else
 			parent->right = current->left;
 	}
-	else if (current->left == NULL) { //no left child, so must have a right chile
+	else if (current->left == NULL) { //no left child, so must have a right child
 		if (current == root) {
 			root = current->right;
 		}
-		else if (isLeft)
+		else if (isLeft) {
 			parent->left = current->right;
-		else
+		}
+		else {
 			parent->right = current->right;
+		}
 	}
 	else {
 		//node to be deleted has two children
@@ -291,6 +287,7 @@ bool BST<T>::deleteNode(int k) {
 
 	}
 }
+
 
 //****Assumes you already called search to see if the node exists****
 template<typename T>
@@ -340,4 +337,33 @@ T* BST<T>::getSuccessor(T* d) {
 		successor->right = d->right;
 	}
 	return successor;
+}
+
+template<typename T>
+T* BST<T>::getRoot() {
+	return root;
+}
+
+template<typename T>
+int  BST<T>::getSize() {
+	return size;
+}
+
+//will have to change for self balancing
+template<typename T>
+void BST<T>::copyNode(T* newNode, T* node) {
+	newNode->data = node->data;
+	newNode->key = node->key;
+	newNode->color = node->color;
+	if (node->left) {
+		T* newLeft = new T;
+		newNode->left = newLeft;
+		copyNode(newLeft, node->left);
+	}
+	if (node->right) {
+		T* newRight = new T;
+		newNode->right = newRight;
+		copyNode(newRight, node->right);
+	}
+	this->insert(newNode);
 }

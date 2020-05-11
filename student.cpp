@@ -12,9 +12,9 @@ Student::Student() {
 	
 }
 
-Student:: Student (int studentID, int advisorID, double gpa, string name, string level, string major)
+void Student:: setStudent (int studentID, int advisorID, double gpa, string name, string level, string major)
 {
-	this->setPerson(studentID, name, level);
+	setPerson(studentID, name, level);
 	this->major = major;
 	this->gpa = gpa;
 	this->advisorID = advisorID;
@@ -73,17 +73,32 @@ bool Student::isEqual(std::string major, bool a) {
 		return false;
 }
 
+void Student::updateAdvisor(int fid) {
+	advisorID = fid;
+}
+
 void Student::printDetails() {
 	cout << endl;
-	cout << "---------" << endl;
-	cout << "Student: " << getName() << endl;
 	cout << "Student ID: " << getId() << endl;
+	cout << "Student:    " << getName() << endl;
+	cout << "GPA:        " << gpa << endl;
+	cout << "Level:      " << getLevel() << endl;
+	cout << "Major:      " << major << endl;
 	cout << "Advisor ID: " << advisorID << endl;
-	cout << "GPA: " << gpa << endl;
-	cout << "Grade: " << getLevel() << endl;
-	cout << "Major: " << major << endl;
-	cout << "---------" << endl;
 	cout << endl;
+}
+
+string Student::getCSV() {
+	string csvRec;
+
+	csvRec = (to_string(getId()) + "," +
+		getName() + "," +
+		to_string(gpa) + "," +
+		getLevel() + "," +
+		major + "," +
+		to_string(advisorID) + ",");
+
+	return csvRec;
 }
 
 
