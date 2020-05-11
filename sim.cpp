@@ -572,15 +572,14 @@ void Sim::DelAdvisorById(List<string>* mylist) {
 		 while (!f->advisees.isEmpty()) {
 			 tempSid = f->advisees.GetHead();
 			 ChangeAdvisor(mylist, tempSid, newFid);
-			 tempSid = f->advisees.popHead();
-			 cout << f->advisees.GetListSize() << endl;
+			 cout << "List of adivsees is now " << f->advisees.GetListSize() << endl;
+			 cout << "Is empty list " << f->advisees.isEmpty() << endl;
 		 }	
-
-		 cout << "Moved all students now delete the fid " << endl;
-		 AddtoUndo(mylist, "a", 0, f->getCSV());
 		 cout << "Deleting the faculty list size is " << mylist->GetListSize();
 	}
 
+	cout << "Moved all students now delete the fid " << endl;
+	AddtoUndo(mylist, "a", 0, f->getCSV());
 	// Remove the advisor
 	facultyTree.deleteNode(fid);
 
@@ -639,7 +638,7 @@ void Sim::AddtoUndo(List<string>* mylist,string action, int isStudent, string re
 	undoRecord.append(to_string(isStudent) +",");
 	undoRecord.append(record);
 	mylist->AddToHead(undoRecord);
-	cout << "Added " << record << " list size is " << mylist->GetListSize() << endl;
+	cout << "Added " << undoRecord << " list size is " << mylist->GetListSize() << endl;
 }
 
 void Sim::Commit(List<string>* undoRecords) {
