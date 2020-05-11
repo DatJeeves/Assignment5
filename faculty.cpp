@@ -46,17 +46,14 @@ string Faculty::getCSV() {
 		getName() + "," +
 		getLevel() + "," +
 		dept + ",");
-	cout << "CSV IS " << csvRec << endl;
+
 	int listSize = advisees.GetListSize();
 	int tempAdvisee = 0;
-	cout << "GETCSV NON Advissess  RETURNS : " << csvRec << endl;
 	for (int i = 0; i < listSize; ++i) {
 		tempAdvisee = advisees.popHead();
 		csvRec = csvRec + to_string(tempAdvisee) + ",";
 		advisees.AddToTail(tempAdvisee);
 	}
-
-	cout << "GETCSV RETURNS : " << csvRec << endl;
 	return csvRec;
 }
 

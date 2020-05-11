@@ -24,7 +24,7 @@ public:
 private:
 	int DisplayMenu();
 	int GetId(string type);
-	double GetDouble(string type);
+	double GetDouble(string prompt);
 	string GetString(string prompt);
 	void DisplayStudents();
 	void DisplayFaculty();
@@ -46,6 +46,7 @@ private:
 	void AddFaculty(List<string>* mylist);
 	void AddFaculty(List<string>* mylist, int fid, string name, string level, string dept);
 	void AddtoUndo(List<string>* mylist, string action, int isStudent, string record);
+	void OutputTables();
 	void Undo();
 	List<string>* GetNewUndoList();
 	void Commit(List<string>* undoRecords);

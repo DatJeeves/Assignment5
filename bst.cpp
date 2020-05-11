@@ -76,9 +76,9 @@ void BST<T>::outputTree(T* node, string fname) {
 	outputTree(node->left, fname);
 
 	string line = node->serialize();
+	line = line + "\n"; // Need to add end of line
 	ofstream file;
-	file.open("test.txt");
-	cout << line << endl;
+	file.open(fname, std::ios_base::app); // appends instead of overwrite
 	file << line;
 	file.close();
 

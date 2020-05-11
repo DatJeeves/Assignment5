@@ -23,7 +23,6 @@ void Sim::SetUpSim() {
 			string level;
 			string dept;
 
-
 			ifstream myFile;
 			string line, colname;
 			// Check if we will have an error with the files, if so report it and use empty trees
@@ -39,8 +38,6 @@ void Sim::SetUpSim() {
 				getline(ss, name, ',');
 				getline(ss, level, ',');
 				getline(ss, dept, ',');
-
-				cout << fid << " , " << name  << endl;
 				AddFaculty(mylist, stoi(fid), name, level, dept);
 			}
 			// Close file
@@ -62,8 +59,6 @@ void Sim::SetUpSim() {
 				string major;
 				getline(ss, major, ',');
 				getline(ss, fid, ',');
-
-				cout << sid << " , " << name << " , " << fid << endl;
 				AddStudent(mylist, stoi(sid), name, stoi(fid), 4.0, level, major);		
 			}
 			// Close file
@@ -89,7 +84,7 @@ int Sim::GetId(string type) {
 	cin >> answer;
 
 	while (std::cin.fail()) {
-		std::cout << "Error please enter a number" << std::endl;
+		std::cout << "ERROR: please enter a number" << std::endl;
 		std::cin.clear();
 		std::cin.ignore(256, '\n');
 		std::cin >> answer;
@@ -99,13 +94,13 @@ int Sim::GetId(string type) {
 	return answer;
 }
 
-double Sim::GetDouble(string type) {
-	cout << type << endl;
+double Sim::GetDouble(string prompt) {
+	cout << prompt << endl;
 	double answer;
 	cin >> answer;
 
 	while (std::cin.fail()) {
-		std::cout << "Error please enter a number" << std::endl;
+		std::cout << "ERROR: please enter a number" << std::endl;
 		std::cin.clear();
 		std::cin >> answer;
 	}
@@ -144,7 +139,7 @@ void Sim::FindFaculty() {
 		facultyTree.returnNode(id)->data->printDetails();
 	}
 	else {
-		cout << "Could not find faculty with Id: " << id << endl;
+		cout << "ERROR: Could not find faculty with Id: " << id << endl;
 	}
 }
 
@@ -156,7 +151,7 @@ void Sim::ShowFacultyForStudent() {
 		fId = studentTree.returnNode(id)->data->advisorID;
 	}
 	else {
-		cout << "Could not find student with Id: " << id << endl;
+		cout << "ERROR: Could not find student with Id: " << id << endl;
 		return;
 	}
 
@@ -164,7 +159,7 @@ void Sim::ShowFacultyForStudent() {
 		facultyTree.returnNode(fId)->data->printDetails();
 	}
 	else {
-		cout << "Could not find faculty with Id: " << fId << endl;
+		cout << "ERROR: Could not find faculty with Id: " << fId << endl;
 	}
 }
 
@@ -188,7 +183,7 @@ void Sim::ShowFacultyAdvisees() {
 		cout << endl;
 	}
 	else {
-		cout << "Could not find faculty with Id: " << id << endl;
+		cout << "ERROR: Could not find faculty with Id: " << id << endl;
 	}
 }
 
@@ -204,7 +199,7 @@ void Sim::ChangeAdvisor(List<string>* mylist) {
 		sid = GetId("student");
 
 		if (!studentTree.search(sid)) {
-			cout << "Could not find student with Id: " << sid << endl;
+			cout << "ERROR: Could not find student with Id: " << sid << endl;
 		}
 		else {
 			keepRunning = false;
@@ -218,7 +213,7 @@ void Sim::ChangeAdvisor(List<string>* mylist) {
 		fid = GetId("faculty");
 
 		if (!facultyTree.search(fid)) {
-			cout << "Could not find faculty with Id: " << fid << endl;
+			cout << "ERROR: Could not find faculty with Id: " << fid << endl;
 		}
 		else {
 			keepRunning = false;
@@ -244,14 +239,11 @@ void Sim::ChangeAdvisor(List<string>* mylist, int sid, int newfid) {
 
 	Faculty* f = facultyTree.returnNode(newfid)->data;
 	if (f->advisees.isEmpty()) {
-		cout << "Its an empty advisor" << endl;
 		f->advisees.AddToHead(sid);
 	}
 	if (!f->advisees.search(sid)) {
 		f->advisees.AddToHead(sid);
 	}
-	cout << "In change advisor changing sid, from, to " << sid << " , " << oldFid << " , " << newfid << endl;
-	cout << "My list size is " << mylist->GetListSize() << endl;
 }
 
 void Sim::AddToAdvisor(List<string>* mylist, int studentId, int advisorID) {
@@ -275,7 +267,6 @@ void Sim::DelAdvisee(List<string>* mylist,int sid, int fid) {
 		string undoRecord =  to_string(sid) + "," + to_string(fid);
 		AddtoUndo(mylist, "af", 0, undoRecord);
 		f->advisees.remove(sid);
-		cout << " Removed from faculty " << endl;
 		f->printDetails();
 	}
 }
@@ -308,7 +299,7 @@ void Sim::AddStudent(List<string>* mylist) {
 		newfid = GetId("faculty");
 
 		if (!facultyTree.search(newfid)) {
-			cout << "Could not find faculty with Id: " << newfid << endl;
+			cout << "ERROR: Could not find faculty with Id: " << newfid << endl;
 		}
 		else {
 			keepRunning = false;
@@ -494,7 +485,7 @@ void Sim::DelAdvisorById(List<string>* mylist) {
 
 	// Check if there are students and we have the last faculty
 	if ((!f->advisees.isEmpty()) && (facultyTree.getSize() == 1)) {
-		cout << "You cant delete this node as it has advisees and there is no other Faculty member to assign to." << endl;
+		cout << "ERROR: You cant delete this node as it has advisees and there is no other Faculty member to assign to." << endl;
 		return;
 	}
 
@@ -521,18 +512,12 @@ void Sim::DelAdvisorById(List<string>* mylist) {
 		 while (!f->advisees.isEmpty()) {
 			 tempSid = f->advisees.GetHead();
 			 ChangeAdvisor(mylist, tempSid, newFid);
-			 cout << "List of adivsees is now " << f->advisees.GetListSize() << endl;
-			 cout << "Is empty list " << f->advisees.isEmpty() << endl;
 		 }	
-		 cout << "Deleting the faculty list size is " << mylist->GetListSize();
 	}
 
-	cout << "Moved all students now delete the fid " << endl;
 	AddtoUndo(mylist, "a", 0, f->getCSV());
 	// Remove the advisor
 	facultyTree.deleteNode(fid);
-
-
 }
 
 
@@ -551,7 +536,7 @@ int Sim::DisplayMenu() {
 	cout << "11. Change a students advisor given Student Id and new Faculty Id" << endl;
 	cout << "12. Remove an advisee from a faculty memebr given the ids." << endl;
 	cout << "13. Rollback" << endl;
-	cout << "14. spare" << endl;
+	cout << "14. Save Tables" << endl;
 	cout << "15. Exit" << endl;
 
 	int answer;
@@ -561,7 +546,7 @@ int Sim::DisplayMenu() {
 
 	// https://stackoverflow.com/questions/18728754/checking-cin-input-stream-produces-an-integer
 	while (std::cin.fail()) {
-		std::cout << "Error please enter a number" << std::endl;
+		std::cout << "ERROR: please enter a number" << std::endl;
 		std::cin.clear();
 		std::cin.ignore(256, '\n');
 		std::cin >> answer;
@@ -569,11 +554,11 @@ int Sim::DisplayMenu() {
 
 	while ((answer > 15) || (answer < 1)) {
 		cout << "You entered " << answer << endl;
-		cout << "Please select from 1 to 14." << endl;
+		cout << "Please select from 1 to 15." << endl;
 		cin >> answer;
 
 		while (std::cin.fail()) {
-			std::cout << "Error please enter a number" << std::endl;
+			std::cout << "ERROR: please enter a number" << std::endl;
 			std::cin.clear();
 			std::cin.ignore(256, '\n');
 			std::cin >> answer;
@@ -587,15 +572,13 @@ void Sim::AddtoUndo(List<string>* mylist,string action, int isStudent, string re
 	undoRecord.append(to_string(isStudent) +",");
 	undoRecord.append(record);
 	mylist->AddToHead(undoRecord);
-	cout << "Added " << undoRecord << " list size is " << mylist->GetListSize() << endl;
 }
 
 void Sim::Commit(List<string>* undoRecords) {
 	if (undoRecords->isEmpty()) {
-		cout << "List of undo is empty" << endl;
+		// Do nothing
 	}
 	else {
-		cout << "Number of records in list are: " << undoRecords->GetListSize() << endl;
 		undoStack.push(undoRecords);
 	}
 }
@@ -611,7 +594,6 @@ void Sim::Undo() {
 	if (!undoStack.isEmpty()) {
 		mylist = undoStack.pop();
 
-		cout << "Your Undo records" << endl;
 		while (!mylist->isEmpty()) {
 			cmd = mylist->popHead();
 
@@ -683,20 +665,33 @@ void Sim::Undo() {
 					}
 				}				
 			}
-
 		}
 	}
 	else {
 		cout << "Nothing to undo" << endl;
 	}
-	
-
-	
 }
 
 List<string>* Sim::GetNewUndoList() {
 	List<string>* mylist = new List<string>;
 	return mylist;
+}
+
+void Sim::OutputTables() {
+	ofstream myFile;
+
+	// Should I ask if the user wants to save output to a filename
+	// or is a default ok ?
+	myFile.open("studentTable.csv", std::ofstream::trunc);
+	if (!myFile.is_open()) throw std::runtime_error("Could not open file studentTable.csv");
+	myFile.close();
+
+	myFile.open("facultyTable.csv", std::ofstream::trunc);
+	if (!myFile.is_open()) throw std::runtime_error("Could not open file facultyTable.csv");
+	myFile.close();
+
+	studentTree.outputTree("studentTable.csv");
+	facultyTree.outputTree("facultyTable.csv");
 }
 
 void Sim::Start() {
@@ -763,9 +758,7 @@ void Sim::Start() {
 			Undo();
 			break;
 		case 14:
-
-			//studentTree.outputTree("tree.txt");
-			facultyTree.outputTree("tree2.txt");
+			OutputTables();
 			break;
 		case 15:
 			keepRunning = false;
