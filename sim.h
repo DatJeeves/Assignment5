@@ -44,7 +44,7 @@ private:
 	void DelAdvisorById(List<string>* mylist);
 	void AddToAdvisor(List<string>* mylist, int studentId, int advisorID);
 	void DelFromAdvisor(int studentId);
-	void DelAdvisee(int sid, int fid);
+	void DelAdvisee(List<string>* mylist,int sid, int fid);
 	void AddFaculty(List<string>* mylist);
 	void AddFaculty(List<string>* mylist, int fid, string name, string level, string dept);
 	void AddtoUndo(List<string>* mylist, string action, int isStudent, string record);

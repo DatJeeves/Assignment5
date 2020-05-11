@@ -320,11 +320,13 @@ void Sim::RemoveAdvisee(List<string>* mylist, int sid,  int newfid) {
 
 }
 
-void Sim::DelAdvisee(int sid, int fid) {
+void Sim::DelAdvisee(List<string>* mylist,int sid, int fid) {
 
 	// Del the student from the faculty
 	Faculty* f = facultyTree.returnNode(fid)->data;
 	if (f->advisees.search(sid)) {
+		string undoRecord =  to_string(sid) + "," + to_string(fid);
+		AddtoUndo(mylist, "af", 0, undoRecord);
 		f->advisees.remove(sid);
 		cout << " Removed from faculty " << endl;
 		f->printDetails();
@@ -514,10 +516,10 @@ void Sim::DelStudentById(List<string>* mylist, int sid) {
 	fid = s->advisorID;
 
 	// Delete this is just for debug
-	cout << s->getCSV();
+	cout << s->getCSV() << endl;;
 
 	// Remove the student from the faculty advisee list
-	DelAdvisee(sid, fid);
+	DelAdvisee(mylist, sid, fid);
 
 	// Remove the student
 	AddtoUndo(mylist, "a", 1, s->getCSV());
