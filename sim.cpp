@@ -19,48 +19,58 @@ void Sim::SetUpSim() {
 			string student;
 			string sid;
 			string fid;
+			string name;
+			string level;
+			string dept;
 
 
 			ifstream myFile;
-			cout << "Adding faculty" << endl;
-			AddFaculty(mylist, 14, "auto gen", "prof", "Math");
-			AddFaculty(mylist, 99, "auto gen", "prof", "Math");
-			//(void)mylist->popHead();
+			string line, colname;
+			// Check if we will have an error with the files, if so report it and use empty trees
+			myFile.open("studentTable.csv");
+			if (!myFile.is_open()) throw std::runtime_error("Could not open file studentTable.csv");
+			myFile.close();
 
-			cout << "Adding Student "<< endl;
+			myFile.open("facultyTable.csv");
+			if (!myFile.is_open()) throw std::runtime_error("Could not open file facultyTable.csv");
+			while (getline(myFile, line)) {
+				stringstream ss(line);
+				getline(ss, fid, ',');
+				getline(ss, name, ',');
+				getline(ss, level, ',');
+				getline(ss, dept, ',');
+
+				cout << fid << " , " << name  << endl;
+				AddFaculty(mylist, stoi(fid), name, level, dept);
+			}
+			// Close file
+			myFile.close();
+
 			// Open an existing file
-			myFile.open("inpit.csv");
-			if (!myFile.is_open()) throw std::runtime_error("Could not open file");
+			myFile.open("studentTable.csv");
+			if (!myFile.is_open()) throw std::runtime_error("Could not open file studentTable.csv" );
 
 			// Helper vars
-			string line, colname;
-
-			getline(myFile, line);
-			// Read the column names
-			if (myFile.good())
-			{
+			while (getline(myFile, line)) {
+				// Read the column names				
 				stringstream ss(line);
 				getline(ss, sid, ',');
-				string name;
 				getline(ss, name, ',');
 				string gpa;
 				getline(ss, gpa, ',');
-				string level;
 				getline(ss, level, ',');
 				string major;
 				getline(ss, major, ',');
 				getline(ss, fid, ',');
 
 				cout << sid << " , " << name << " , " << fid << endl;
-				AddStudent(mylist, stoi(sid), name, stoi(fid), 4.0, level, major);
-				//(void)mylist->popHead();
-
-				// Close file
-				myFile.close();
+				AddStudent(mylist, stoi(sid), name, stoi(fid), 4.0, level, major);		
 			}
+			// Close file
+			myFile.close();
 	}
 	catch (exception& e) {
-		cout << "You have an error :" << e.what() << endl;
+		cout << "Using an empty Student and / or Faculty issue is - " << e.what() << endl;
 	}
 }
 
@@ -253,71 +263,8 @@ void Sim::AddToAdvisor(List<string>* mylist, int studentId, int advisorID) {
 }
 
 void Sim::RemoveAdvisee(List<string>* mylist) {
-	int sid;
-	int newfid;
-
-	cout << "Which advisee do you want to remove from faculty member ? " << endl;
-	// Get the student id
-	bool keepRunning = true;
-	while (keepRunning) {
-		sid = GetId("student");
-
-		if (!studentTree.search(sid)) {
-			cout << "Could not find student with Id: " << sid << endl;
-		}
-		else {
-			keepRunning = false;
-		}
-	}
-
-
-	cout << "Which advisor do you want to move the student to ? " << endl;
-	// Get the faculty id
-	keepRunning = true;
-	while (keepRunning) {
-		newfid = GetId("faculty");
-
-		if (!facultyTree.search(newfid)) {
-			cout << "Could not find faculty with Id: " << newfid << endl;
-		}
-		else {
-			keepRunning = false;
-		}
-	}
-	
-	// Remove the old fid but assign it to the new fid2
-	RemoveAdvisee(mylist, sid, newfid);
-
-}
-
-void Sim::RemoveAdvisee(List<string>* mylist, int sid,  int newfid) {
-	int fid;
-
-	// Assumes the checks for the sid, fid, and fid2 have been checeked
-	Student* s = studentTree.returnNode(sid)->data;
-	fid = s->advisorID;
-	s->advisorID = newfid;
-
-	// Add the student to the new faculty
-	Faculty* f = facultyTree.returnNode(newfid)->data;
-	if (!f->advisees.search(sid)) {
-		f->advisees.AddToHead(sid);
-	}
-
-	cout << " Assigned to faculty " << endl;
-	f->printDetails();
-
-	// Remove the student from the old faculty
-	Faculty* oldf = facultyTree.returnNode(fid)->data;
-	if (oldf->advisees.search(sid)) {
-		oldf->advisees.remove(sid);
-	}
-
-	cout << " Removed from faculty " << endl;
-	oldf->printDetails();
-	string record = to_string(sid) + "," + to_string(newfid) + ",";
-	AddtoUndo(mylist, "af", 0, record);
-
+	// I dont know whats the difference between this and the Change
+	ChangeAdvisor(mylist);
 }
 
 void Sim::DelAdvisee(List<string>* mylist,int sid, int fid) {
@@ -734,20 +681,7 @@ void Sim::Undo() {
 						AddToAdvisor(mylist, stoi(sid), stoi(fid));
 						(void)mylist->popHead();
 					}
-				}
-				if (action == "df") {
-					getline(ss, student, ',');
-					if (student == "1") {
-						// Nothing to do
-					}
-					else {
-						getline(ss, sid, ',');
-						getline(ss, fid, ',');
-
-						RemoveAdvisee(mylist, stoi(sid), stoi(fid));
-						(void)mylist->popHead();
-					}
-				}
+				}				
 			}
 
 		}
@@ -829,7 +763,9 @@ void Sim::Start() {
 			Undo();
 			break;
 		case 14:
-			cout << "nothigg for now" << endl;
+
+			//studentTree.outputTree("tree.txt");
+			facultyTree.outputTree("tree2.txt");
 			break;
 		case 15:
 			keepRunning = false;

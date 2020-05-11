@@ -51,33 +51,38 @@ void BST<T>::printTree(T* node) {
 }
 
 template<typename T>
-void BST<T>::printPrettyTree(T* p, string tab)
-{
-	if (p != NULL) {
-		if (p->right) {			
-			printPrettyTree(p->right, tab+"    ");
-		}
-		
-		cout << tab << ' ';
-		
-		if (p->right) cout << " /\n" << tab << ' ';
-		std::cout << p->key << "\n ";
-		if (p->left) {
-			cout  << ' ' << " \\\n";
-			
-			printPrettyTree(p->left, " ");
-		}
-	}
-}
-
-template<typename T>
 void BST<T>::printTree() {
 	if (isEmpty()) {
 		return;
 	}
 
-	//printPrettyTree(root, "  ");
 	printTree(root);
+}
+
+template<typename T>
+void BST<T>::outputTree(string fname) {
+	if (isEmpty()) {
+		return;
+	}
+
+	outputTree(root, fname);
+}
+
+template<typename T>
+void BST<T>::outputTree(T* node, string fname) {
+	if (node == NULL) {
+		return;
+	}
+	outputTree(node->left, fname);
+
+	string line = node->serialize();
+	ofstream file;
+	file.open("test.txt");
+	cout << line << endl;
+	file << line;
+	file.close();
+
+	outputTree(node->right, fname);
 }
 
 template<typename T>
@@ -116,9 +121,8 @@ bool BST<T>::isEmpty() {
 	}
 }
 
-//***A FAILED SEARCH***
-//***HAVE TO OVERLOAD FOR DIFF TYPES
-//have to change for self balancing
+
+
 template<typename T>
 void BST<T>::insert(T* node) {
 	if (search(node->key)) {

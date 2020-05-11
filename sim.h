@@ -36,14 +36,12 @@ private:
 	void ChangeAdvisor(List<string>* mylist);
 	void ChangeAdvisor(List<string>* mylist,int sid, int newfid);
 	void RemoveAdvisee(List<string>* mylist);
-	void RemoveAdvisee(List<string>* mylist,int sid, int newfid);
 	void AddStudent(List<string>* mylist);
 	void AddStudent(List<string>* mylist, int sid, string naem, int newfid, double gpa, string level, string major);
 	void DelStudentById(List<string>* mylist);
 	void DelStudentById(List<string>* mylist, int sid);
 	void DelAdvisorById(List<string>* mylist);
 	void AddToAdvisor(List<string>* mylist, int studentId, int advisorID);
-	void DelFromAdvisor(int studentId);
 	void DelAdvisee(List<string>* mylist,int sid, int fid);
 	void AddFaculty(List<string>* mylist);
 	void AddFaculty(List<string>* mylist, int fid, string name, string level, string dept);

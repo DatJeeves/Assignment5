@@ -31,6 +31,12 @@ void TreeNode<T>::print() {
 }
 
 template<typename T>
+string TreeNode<T>::serialize() {
+	// Assumes data has a print method
+	return data->getCSV();
+}
+
+template<typename T>
 TreeNode<T>::~TreeNode() {
 	//have delete for diff types
 	//in this test we delete student

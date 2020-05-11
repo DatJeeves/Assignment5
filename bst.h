@@ -17,6 +17,8 @@ public:
 	bool deleteNode(int key);
 	void deleteTree(T* curr);
 	T* returnNode(int key);
+	void outputTree(string fname);
+	void outputTree(T* node, string fname);
 
 	//red-black functions
 	void reColor(T* node, bool color);
@@ -30,7 +32,6 @@ public:
 	//extra help functions
 	T* getSuccessor(T* next);
 	void printTree(T* node);
-	void printPrettyTree(T* node, string tab);
 	void printTree();
 	void copyNode(T* newNode, T* fromNode);
 private:

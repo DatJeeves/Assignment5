@@ -18,6 +18,7 @@ public:
 	//TreeNode(int k, int value);
 	TreeNode(int k, T* record);
 	void print();
+	string serialize();
 	~TreeNode();
 	//have virtual destructor for student/faculty
 
