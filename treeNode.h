@@ -23,7 +23,16 @@ public:
 	//have virtual destructor for student/faculty
 
 
-	
+		// Overloading operators
+//  - https://www.tutorialspoint.com/cplusplus/relational_operators_overloading.htm
+//  - https://www.tutorialspoint.com/cplusplus/cpp_conditional_operator.htm
+
+	bool operator < (T* n2) { (key < n2.key) ? true : false; }
+	bool operator > (T* n2) { (key > n2.key) ? true : false; }
+	bool operator == (T* n2) { (key == n2.key) ? true : false; }
+	bool operator != (T* n2) { (key != n2.key) ? true : false; }
+	bool operator >= (T* n2) { (key >= n2.key) ? true : false; }
+	bool operator <= (T* n2) { (key <= n2.key) ? true : false; }
 
 	/* 
 	******SUPER IMPORTANT**********

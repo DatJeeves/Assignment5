@@ -35,6 +35,7 @@ public:
 	void printTree(T* node);
 	void printTree();
 	void copyNode(T* newNode, T* fromNode);
+
 private:
 	T* root;
 	int size = 0;
