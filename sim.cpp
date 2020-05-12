@@ -713,6 +713,7 @@ void Sim::OutputTables() {
 	if (!myFile.is_open()) throw std::runtime_error("Could not open file facultyTable.csv");
 	myFile.close();
 
+	cout << "Saving the tables .." << endl;
 	masterStudent.outputTree("studentTable.csv");
 	masterFaculty.outputTree("facultyTable.csv");
 }
@@ -783,6 +784,8 @@ void Sim::Start() {
 			OutputTables();
 			break;
 		case 15:
+			OutputTables();
+			cout << "Goodbye." << endl;
 			keepRunning = false;
 		default:
 			break;
