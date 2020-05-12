@@ -51,10 +51,32 @@ private:
 	List<string>* GetNewUndoList();
 	void Commit(List<string>* undoRecords);
 
+
+	// New methods
+	GenStack<string>* GetNewUndoStack();
+
+	void ChangeAdvisor(GenStack<string>* mylist);
+	void ChangeAdvisor(GenStack<string>* mylist, int sid, int newfid);
+	void RemoveAdvisee(GenStack<string>* mylist);
+	void AddStudent(GenStack<string>* mylist);
+	void AddStudent(GenStack<string>* mylist, int sid, string naem, int newfid, double gpa, string level, string major);
+	void DelStudentById(GenStack<string>* mylist);
+	void DelStudentById(GenStack<string>* mylist, int sid);
+	void DelAdvisorById(GenStack<string>* mylist);
+	void AddToAdvisor(GenStack<string>* mylist, int studentId, int advisorID);
+	void DelAdvisee(GenStack<string>* mylist, int sid, int fid);
+	void AddFaculty(GenStack<string>* mylist);
+	void AddFaculty(GenStack<string>* mylist, int fid, string name, string level, string dept);
+	void AddtoUndo(GenStack<string>* mylist, string action, int isStudent, string record);
+	void Undo2();
+	void Commit(GenStack<string>* undoRecords);
+
 	BST<TreeNode<Student>> masterStudent;
 	BST<TreeNode<Faculty>> masterFaculty;
 
 	GenStack<List<string>*> undoStack;
+	List<GenStack<string>*> undoList2;
+	GenStack<string>* myUndoStack;
 	int MAXUNDO = 5;
 	Input config;
 };
