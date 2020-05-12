@@ -51,8 +51,8 @@ private:
 	List<string>* GetNewUndoList();
 	void Commit(List<string>* undoRecords);
 
-	BST<TreeNode<Student>> studentTree;
-	BST<TreeNode<Faculty>> facultyTree;
+	BST<TreeNode<Student>> masterStudent;
+	BST<TreeNode<Faculty>> masterFaculty;
 
 	GenStack<List<string>*> undoStack;
 	int MAXUNDO = 5;

@@ -55,7 +55,6 @@ void BST<T>::printTree() {
 	if (isEmpty()) {
 		return;
 	}
-
 	printTree(root);
 }
 
@@ -121,8 +120,6 @@ bool BST<T>::isEmpty() {
 	}
 }
 
-
-
 template<typename T>
 void BST<T>::insert(T* node) {
 	if (search(node->key)) {
@@ -131,7 +128,6 @@ void BST<T>::insert(T* node) {
 
 	//can't have duplicate keys so check for it
 	if (isEmpty()) {
-		cout << "Its empty tree " << endl;
 		//empty tree
 		root = node;
 		node->left = NULL;
@@ -208,7 +204,6 @@ bool BST<T>::deleteNode(int k) {
 	bool isLeft = true;
 
 	while (current->key != k) {
-		//cout << "Current key is " << current->key << " keep looping" << endl;
 		parent = current;
 		if (k < current->key) {
 			isLeft = true;

@@ -11,9 +11,6 @@ int main(int argc, char** argv) {
 
 	db.Start();
 	
-	//testTree.printTree();
-	//delete testTree;
-	//TreeNode test = new 
 	return 0;
 	
 }

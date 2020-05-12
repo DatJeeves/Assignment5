@@ -63,6 +63,7 @@ void Sim::SetUpSim() {
 			}
 			// Close file
 			myFile.close();
+			delete(mylist);
 	}
 	catch (exception& e) {
 		cout << "Using an empty Student and / or Faculty issue is - " << e.what() << endl;
@@ -110,11 +111,11 @@ double Sim::GetDouble(string prompt) {
 }
 
 void Sim::DisplayStudents() {
-	studentTree.printTree();
+	masterStudent.printTree();
 }
 
 void Sim::DisplayFaculty() {
-	facultyTree.printTree();
+	masterFaculty.printTree();
 }
 
 void Sim::FindStudent() {
@@ -124,8 +125,8 @@ void Sim::FindStudent() {
 }
 
 void Sim::FindStudent(int id) {
-	if (studentTree.search(id)) {
-		studentTree.returnNode(id)->data->printDetails();
+	if (masterStudent.search(id)) {
+		masterStudent.returnNode(id)->data->printDetails();
 	}
 	else {
 		cout << "Could not find student with Id: " << id << endl;
@@ -135,8 +136,8 @@ void Sim::FindStudent(int id) {
 void Sim::FindFaculty() {
 	int id = GetId("faculty");
 
-	if (facultyTree.search(id)) {
-		facultyTree.returnNode(id)->data->printDetails();
+	if (masterFaculty.search(id)) {
+		masterFaculty.returnNode(id)->data->printDetails();
 	}
 	else {
 		cout << "ERROR: Could not find faculty with Id: " << id << endl;
@@ -146,17 +147,20 @@ void Sim::FindFaculty() {
 void Sim::ShowFacultyForStudent() {
 	int id = GetId("student");
 	int fId;
+	TreeNode<Student>* s = new TreeNode<Student>;
 
-	if (studentTree.search(id)) {
-		fId = studentTree.returnNode(id)->data->advisorID;
+	if (masterStudent.search(id)) {
+		s = masterStudent.returnNode(id);
+		fId = s->data->advisorID;
 	}
 	else {
 		cout << "ERROR: Could not find student with Id: " << id << endl;
 		return;
 	}
-
-	if (facultyTree.search(fId)) {
-		facultyTree.returnNode(fId)->data->printDetails();
+	
+	cout << "Student " + s->data->getName() +  "'s faculty has the following details:" << endl;
+	if (masterFaculty.search(fId)) {
+		masterFaculty.returnNode(fId)->data->printDetails();
 	}
 	else {
 		cout << "ERROR: Could not find faculty with Id: " << fId << endl;
@@ -166,9 +170,9 @@ void Sim::ShowFacultyForStudent() {
 void Sim::ShowFacultyAdvisees() {
 	int id = GetId("faculty");
 
-	if (facultyTree.search(id)) {
+	if (masterFaculty.search(id)) {
 
-		Faculty* f = facultyTree.returnNode(id)->data;
+		Faculty* f = masterFaculty.returnNode(id)->data;
 
 		cout << f->getName() << " has the following students as their advisee:" << endl;
 
@@ -176,9 +180,14 @@ void Sim::ShowFacultyAdvisees() {
 		int tempAdvisee = 0;
 
 		for (int i = 0; i < listSize; ++i) {
-			tempAdvisee = f->advisees.popHead();
-			FindStudent(tempAdvisee);
-			f->advisees.AddToTail(tempAdvisee);
+			if (!f->advisees.isEmpty()) {
+				tempAdvisee = f->advisees.popHead();			
+				FindStudent(tempAdvisee);
+				f->advisees.AddToTail(tempAdvisee);
+			}
+			else {
+				cout << "ERROR: Unexpected NULL for advisee list" << endl;
+			}
 		}
 		cout << endl;
 	}
@@ -198,7 +207,7 @@ void Sim::ChangeAdvisor(List<string>* mylist) {
 	while (keepRunning) {
 		sid = GetId("student");
 
-		if (!studentTree.search(sid)) {
+		if (!masterStudent.search(sid)) {
 			cout << "ERROR: Could not find student with Id: " << sid << endl;
 		}
 		else {
@@ -212,7 +221,7 @@ void Sim::ChangeAdvisor(List<string>* mylist) {
 	while (keepRunning) {
 		fid = GetId("faculty");
 
-		if (!facultyTree.search(fid)) {
+		if (!masterFaculty.search(fid)) {
 			cout << "ERROR: Could not find faculty with Id: " << fid << endl;
 		}
 		else {
@@ -223,32 +232,21 @@ void Sim::ChangeAdvisor(List<string>* mylist) {
 }
 
 void Sim::ChangeAdvisor(List<string>* mylist, int sid, int newfid) {
-	Student* s = studentTree.returnNode(sid)->data;
+
+	Student* s = masterStudent.returnNode(sid)->data;
 	int oldFid;
 	oldFid = s->advisorID;
 	s->advisorID = newfid;
-
 	string record = (to_string(sid) + "," + to_string(oldFid) + ",");
+
+	DelAdvisee(mylist, sid, oldFid);
+	AddToAdvisor(mylist, sid, newfid);	
+	s->advisorID = newfid;
 	AddtoUndo(mylist, "c", 1, record);
-	// Remove student from old Faculty
-	Faculty* oldf = facultyTree.returnNode(oldFid)->data;
-
-	if (!oldf->advisees.isEmpty()) {
-		oldf->advisees.remove(sid);
-	}
-
-	Faculty* f = facultyTree.returnNode(newfid)->data;
-	if (f->advisees.isEmpty()) {
-		f->advisees.AddToHead(sid);
-	}
-	if (!f->advisees.search(sid)) {
-		f->advisees.AddToHead(sid);
-	}
 }
 
 void Sim::AddToAdvisor(List<string>* mylist, int studentId, int advisorID) {
-
-	Faculty* f = facultyTree.returnNode(advisorID)->data;
+	Faculty* f = masterFaculty.returnNode(advisorID)->data;
 	f->advisees.AddToHead(studentId);
 	string record = to_string(studentId) + "," + to_string(advisorID) + ",";
 	AddtoUndo(mylist, "df", 0, record);
@@ -260,9 +258,8 @@ void Sim::RemoveAdvisee(List<string>* mylist) {
 }
 
 void Sim::DelAdvisee(List<string>* mylist,int sid, int fid) {
-
 	// Del the student from the faculty
-	Faculty* f = facultyTree.returnNode(fid)->data;
+	Faculty* f = masterFaculty.returnNode(fid)->data;
 	if (f->advisees.search(sid)) {
 		string undoRecord =  to_string(sid) + "," + to_string(fid);
 		AddtoUndo(mylist, "af", 0, undoRecord);
@@ -280,7 +277,7 @@ void Sim::AddStudent(List<string>* mylist) {
 	while (keepRunning) {
 		sid = GetId("student");
 
-		if (studentTree.search(sid)) {
+		if (masterStudent.search(sid)) {
 			cout << "ERROR >> Student with Id: " << sid << " alredy exists" << endl;
 		}
 		else {
@@ -298,7 +295,7 @@ void Sim::AddStudent(List<string>* mylist) {
 	while (keepRunning) {
 		newfid = GetId("faculty");
 
-		if (!facultyTree.search(newfid)) {
+		if (!masterFaculty.search(newfid)) {
 			cout << "ERROR: Could not find faculty with Id: " << newfid << endl;
 		}
 		else {
@@ -359,7 +356,7 @@ void Sim::AddStudent(List<string>* mylist, int sid, string name, int newfid, dou
 	Student* s = new Student;
 	s->setStudent(sid, newfid, gpa, name, level, major);
 	TreeNode<Student>* studentNode = new TreeNode<Student>(sid, s);
-	studentTree.insert(studentNode);
+	masterStudent.insert(studentNode);
 	AddtoUndo(mylist, "d", 1, s->getCSV());
 	AddToAdvisor(mylist,sid, newfid);
 }
@@ -373,7 +370,7 @@ void Sim::AddFaculty(List<string>* mylist) {
 	while (keepRunning) {
 		fid = GetId("faculty");
 
-		if (facultyTree.search(fid)) {
+		if (masterFaculty.search(fid)) {
 			cout << "ERROR >> Faculty with Id: " << fid << " alredy exists" << endl;
 		}
 		else {
@@ -422,7 +419,7 @@ void Sim::AddFaculty(List<string>* mylist, int fid, string name, string level, s
 	Faculty* f = new Faculty;
 	f->setFaculty(fid, name, level, dept);
 	TreeNode<Faculty>* facultytNode = new TreeNode<Faculty>(fid, f);
-	facultyTree.insert(facultytNode);
+	masterFaculty.insert(facultytNode);
 	AddtoUndo(mylist, "d", 0, f->getCSV());
 }
 
@@ -436,7 +433,7 @@ void Sim::DelStudentById(List<string>* mylist) {
 	while (keepRunning) {
 		sid = GetId("student");
 
-		if (!studentTree.search(sid)) {
+		if (!masterStudent.search(sid)) {
 			cout << "ERROR >> Student with Id: " << sid << " does not exist" << endl;
 		}
 		else {
@@ -450,7 +447,7 @@ void Sim::DelStudentById(List<string>* mylist) {
 void Sim::DelStudentById(List<string>* mylist, int sid) {
 
 	int fid;
-	Student* s = studentTree.returnNode(sid)->data;
+	Student* s = masterStudent.returnNode(sid)->data;
 	fid = s->advisorID;
 
 	// Delete this is just for debug
@@ -461,7 +458,7 @@ void Sim::DelStudentById(List<string>* mylist, int sid) {
 
 	// Remove the student
 	AddtoUndo(mylist, "a", 1, s->getCSV());
-	studentTree.deleteNode(sid);
+	masterStudent.deleteNode(sid);
 }
 
 void Sim::DelAdvisorById(List<string>* mylist) {
@@ -473,7 +470,7 @@ void Sim::DelAdvisorById(List<string>* mylist) {
 	while (keepRunning) {
 		fid = GetId("faculty");
 
-		if (!facultyTree.search(fid)) {
+		if (!masterFaculty.search(fid)) {
 			cout << "ERROR >> Faculty with Id: " << fid << " does not exist" << endl;
 		}
 		else {
@@ -481,10 +478,10 @@ void Sim::DelAdvisorById(List<string>* mylist) {
 		}
 	}
 
-	Faculty* f = facultyTree.returnNode(fid)->data;
+	Faculty* f = masterFaculty.returnNode(fid)->data;
 
 	// Check if there are students and we have the last faculty
-	if ((!f->advisees.isEmpty()) && (facultyTree.getSize() == 1)) {
+	if ((!f->advisees.isEmpty()) && (masterFaculty.getSize() == 1)) {
 		cout << "ERROR: You cant delete this node as it has advisees and there is no other Faculty member to assign to." << endl;
 		return;
 	}
@@ -496,7 +493,7 @@ void Sim::DelAdvisorById(List<string>* mylist) {
 		 keepRunning = true;
 		 while (keepRunning) {
 			 newFid = GetId("faculty");
-			 if (!facultyTree.search(newFid)) {
+			 if (!masterFaculty.search(newFid)) {
 				 cout << "ERROR >> Faculty with Id: " << fid << " does not exist. Please enter one that does." << endl;
 			 }
 			 else {
@@ -504,7 +501,7 @@ void Sim::DelAdvisorById(List<string>* mylist) {
 			 }
 		 }
 
-		 Faculty* newFaculty = facultyTree.returnNode(newFid)->data;
+		 Faculty* newFaculty = masterFaculty.returnNode(newFid)->data;
 
 		 int tempSid;
 		 string record;
@@ -517,7 +514,7 @@ void Sim::DelAdvisorById(List<string>* mylist) {
 
 	AddtoUndo(mylist, "a", 0, f->getCSV());
 	// Remove the advisor
-	facultyTree.deleteNode(fid);
+	masterFaculty.deleteNode(fid);
 }
 
 
@@ -572,6 +569,8 @@ void Sim::AddtoUndo(List<string>* mylist,string action, int isStudent, string re
 	undoRecord.append(to_string(isStudent) +",");
 	undoRecord.append(record);
 	mylist->AddToHead(undoRecord);
+	// Next line is for debugging if you want to see what undo records are generated
+	// cout << "UNDO REC" << undoRecord << endl;
 }
 
 void Sim::Commit(List<string>* undoRecords) {
@@ -592,11 +591,14 @@ void Sim::Undo() {
 	string fid;
 
 	if (!undoStack.isEmpty()) {
+		cout << "Performing an Undo" << endl;
 		mylist = undoStack.pop();
 
 		while (!mylist->isEmpty()) {
 			cmd = mylist->popHead();
 
+			// Next line used for debugging to see the commands
+			// cout << cmd << endl;
 			// Create a stringstream of the current line
 			stringstream ss(cmd);
 			if (getline(ss, action, ',')) {
@@ -605,7 +607,12 @@ void Sim::Undo() {
 					getline(ss, sid, ',');
 					getline(ss, fid, ',');
 					ChangeAdvisor(mylist, stoi(sid), stoi(fid));
-					(void)mylist->popHead();
+					(void)mylist->popHead(); // Removes the change just added
+					(void)mylist->popHead(); // Removes the df just added
+					(void)mylist->popHead(); // Removes the af just added
+					(void)mylist->popHead(); // Removes the df from previous
+					(void)mylist->popHead(); // Removes the af from previous
+
 				}
 
 				if (action == "d") {
@@ -618,7 +625,7 @@ void Sim::Undo() {
 					else {
 						getline(ss, fid, ',');
 						// Remove the advisor
-						facultyTree.deleteNode(stoi(fid));
+						masterFaculty.deleteNode(stoi(fid));
 					}										
 				}
 
@@ -663,8 +670,24 @@ void Sim::Undo() {
 						AddToAdvisor(mylist, stoi(sid), stoi(fid));
 						(void)mylist->popHead();
 					}
-				}				
+				}	
+				if (action == "df") {
+					getline(ss, student, ',');
+					if (student == "1") {
+						// Nothing to do
+					}
+					else {
+						getline(ss, sid, ',');
+						getline(ss, fid, ',');
+
+						DelAdvisee(mylist, stoi(sid), stoi(fid));
+						(void)mylist->popHead();
+					}
+				}
 			}
+		}
+		if (mylist->isEmpty()) {
+			delete (mylist);
 		}
 	}
 	else {
@@ -690,13 +713,12 @@ void Sim::OutputTables() {
 	if (!myFile.is_open()) throw std::runtime_error("Could not open file facultyTable.csv");
 	myFile.close();
 
-	studentTree.outputTree("studentTable.csv");
-	facultyTree.outputTree("facultyTable.csv");
+	masterStudent.outputTree("studentTable.csv");
+	masterFaculty.outputTree("facultyTable.csv");
 }
 
 void Sim::Start() {
 	
-	cout << endl << "========================================" << endl;
 	SetUpSim();
 
 	int answer;

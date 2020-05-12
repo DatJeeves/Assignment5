@@ -2,6 +2,8 @@
 #define LIST_H
 #include "node.h"
 #include <exception>
+#include <iostream>
+
 
 using namespace std;
 
@@ -82,43 +84,38 @@ template<typename T>
 void List<T>::AddToHead(T data)
 {
 	Node<T>* n = new Node<T>();
+	n->data = data;
+	n->prevNode = NULL;
+	n->nextNode = NULL;
 
 	if (isEmpty()) {
 		head = n;
 		tail = head;
-		n->data = data;
-		head->prevNode = NULL;
-		head->nextNode = NULL;
 	}
 	else {
-		n->prevNode = NULL;
 		n->nextNode = head;
 		head->prevNode = n;
-		n->data = data;
 		head = n;
 	}
 	++size;
-
 }
 
 template<typename T>
 void List<T>::AddToTail(T data)
 {
 	Node<T>* n = new Node<T>();
+	n->data = data;
+	n->prevNode = NULL;
+	n->nextNode = NULL;
 
 	if (isEmpty()) {
 		// Tail and head will do the same thing
 		head = n;
 		tail = head;
-		n->data = data;
-		head->prevNode = NULL;
-		head->nextNode = NULL;
 	}
 	else {
 		n->prevNode = tail;
-		n->nextNode = NULL;
 		tail->nextNode = n;
-		n->data = data;
 		tail = n;
 	}
 	++size;
@@ -127,18 +124,25 @@ void List<T>::AddToTail(T data)
 
 template <typename T>
 T List<T>::popHead() {
-
 	T answer;
 
 	if (isEmpty()) {
-		//should throw error here?
-		//return answer; //in place of an exception
 		throw "ERROR: Trying to pop from an empty stack";
 	}
-	answer = head->data;
-	head = head->nextNode;
-	--size;
-	return answer;
+
+	// added both checks for NULL and isEmpty for safety
+	if ((head != NULL) || isEmpty()) {
+		answer = head->data;
+		head = head->nextNode;
+		if (head != NULL) {
+			head->prevNode = NULL;
+		}
+		--size;
+		return answer;
+	}
+	else {
+		throw "ERROR: Trying to pop from an empty stack";
+	}
 }
 
 template <typename T>
@@ -151,6 +155,7 @@ T List<T>::popTail() {
 	}
 	answer = tail->data;
 	tail = tail->prevNode;
+	tail->nextNode = NULL;
 	--size;
 	return answer;
 }
@@ -177,33 +182,60 @@ bool List<T>::search(T data) {
 
 template <typename T>
 void List<T>::remove(T data) {
+	// Reference https://www.tutorialspoint.com/learn_c_by_examples/remove_data_from_doubly_linked_list.htm
+	// I had issues with my removal so eventually found this website that helped me 
+	// find what I was doing wrong
 	Node<T>* tempNode = head;
+	Node<T>* tempPrevNode = NULL;
 
-	if (head->data == data) {
-		head = head->nextNode;
-		--size;
-		free(tempNode);
+	if (head == NULL) {
+		// we cant delete from a NULL pointer so return
 		return;
 	}
 
-	while (tempNode != NULL) {
-		if (tempNode->data == data) {
-
-			if (tempNode->nextNode != NULL) {
-				tempNode->nextNode->prevNode = tempNode->prevNode;
-			}
-
-			if (tempNode->prevNode != NULL) {
-				tempNode->prevNode->nextNode = tempNode->nextNode;
-			}
-			--size;
-			free(tempNode);			
+	if (head->data == data) {
+		--size;
+		if (head->nextNode != NULL) {
+			head = head->nextNode;			
 			return;
 		}
 		else {
-			tempNode = tempNode->nextNode;
-			
+			// Since there are no more nodes
+			head = NULL;
+			return;
 		}
+
+	} else if ((head->data != data) && 
+		(head->nextNode == NULL)) {
+		// Did not find the data in here so will just return
+		return;
+	}
+
+
+	while ((tempNode->nextNode != NULL) &&
+	       (tempNode->data != data)) {
+		// Keep searching till you find it
+		tempPrevNode = tempNode;
+		tempNode = tempNode->nextNode;		
+	}
+
+	if (tempNode->data == data) {
+		tempPrevNode->nextNode = tempPrevNode->nextNode->nextNode;
+
+		if (tempPrevNode->nextNode != NULL) { 
+			// This makes the next nodes prev point back
+			tempPrevNode->nextNode->prevNode = tempPrevNode;
+		}
+		else {
+			tail = tempPrevNode;
+		}
+
+		--size;
+		free(tempNode);
+	}
+	else {
+		// Did not find it in this list so just return
+		--size;
 	}
 }
 

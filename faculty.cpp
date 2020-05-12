@@ -31,11 +31,13 @@ void Faculty::printDetails() {
 	
 	int listSize = advisees.GetListSize();
 	int tempAdvisee = 0;
-
+	cout << " Faculty has " << listSize << " advisees: " << endl;
 	for (int i = 0; i < listSize; ++i) {
-		tempAdvisee = advisees.popHead();
-		cout << "     Advisee " << i << ": " << tempAdvisee << endl;
-		advisees.AddToTail(tempAdvisee);
+		if (advisees.head != NULL) {
+			tempAdvisee = advisees.popHead();
+			cout << "     Advisee " << i << ": " << tempAdvisee << endl;
+			advisees.AddToTail(tempAdvisee);
+		}
 	}
 	cout << endl;
 }
