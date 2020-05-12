@@ -12,7 +12,6 @@ Person::Person() {
 
 void Person::setPerson(int PersonID, string name, string level)
 {
-
 	this->PersonID = PersonID;
 	this->name = name;
 	this->level = level;
@@ -20,13 +19,6 @@ void Person::setPerson(int PersonID, string name, string level)
 
 Person::~Person() {
 
-}
-
-bool Person::isEqual(int Id) {
-	if (PersonID == Id)
-		return true;
-	else
-		return false;
 }
 
 void Person::setId(int Id) {

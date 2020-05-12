@@ -10,7 +10,8 @@ public:
 	BST();
 	//assumes template class has a virtual destructor
 	~BST();
-	//functions to augment the tree
+
+	//methods to augment the tree
 	void insert(T* node);
 	T*  getRoot();
 	bool search(int k);
@@ -20,16 +21,16 @@ public:
 	void outputTree(string fname);
 	void outputTree(T* node, string fname);
 
-	//red-black functions
+	//red-black method
 	void reColor(T* node, bool color);
 
-	//functions to check the tree metrics
+	//methods to check the tree metrics
 	T* getMin();
 	T* getMax();
 	bool isEmpty();
 	int getSize();
 
-	//extra help functions
+	//extra help methods
 	T* getSuccessor(T* next);
 	void printTree(T* node);
 	void printTree();

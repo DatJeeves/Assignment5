@@ -8,23 +8,33 @@ class Person {
 public:
 	Person();
 	~Person();
-	/*Parameters added with different types to overload isEqual.
-	They are not used in the functions, just to distinguish each
-	one.*/
+	
 	void setPerson(int ID, string name, string level);
-	bool isEqual(int ID);
 	int getId();
 	void setId(int Id);
 	string getName();
 	void setName(string name);
 	string getLevel();
 	void setLevel(string level);
+
+	// Overloading operators
+//  - https://www.tutorialspoint.com/cplusplus/relational_operators_overloading.htm
+//  - https://www.tutorialspoint.com/cplusplus/cpp_conditional_operator.htm
+
+	bool operator < (Person& p2) { (getId() < p2.getId()) ? true : false; }
+	bool operator > (Person& p2) { (getId() > p2.getId()) ? true : false; }
+	bool operator == (Person& p2) { (getId() == p2.getId()) ? true : false; }
+	bool operator != (Person& p2) { (getId() != p2.getId()) ? true : false; }
+	bool operator >= (Person& p2) { (getId() >= p2.getId()) ? true : false; }
+	bool operator <= (Person& p2) { (getId() <= p2.getId()) ? true : false; }
 	
 private:	
 	//Person vars
 	int PersonID;
 	string name;
 	string level;
+
+
 };
 
 #endif

@@ -77,7 +77,7 @@ don't have to set the previous head node's prev pointer
 to NULL because as being the previous head node, it's prev
 pointer already pointed to NULL.
 
-Lastly, we finish the function off the function by
+Lastly, we finish the method off the method by
 incrementing it's size.
 */
 template<typename T>

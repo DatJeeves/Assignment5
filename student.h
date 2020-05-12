@@ -13,10 +13,6 @@ public:
 
 	void setStudent(int studentID, int advisorID, double gpa, std::string name, std::string level, std::string major);
 
-	/*Parameters added with different types to overload isEqual.
-	They are not used in the functions, just to distinguish each
-	one.*/
-
 	void updateAdvisor(int fid);
 	void printDetails();
 	string getCSV();
