@@ -401,13 +401,13 @@ void Sim::AddFaculty(List<string>* mylist) {
 	while (keepRunning) {
 		dept = GetString("Enter the Dept : ");
 
-		if (config.Majors.search(dept)) {
+		if (config.Dept.search(dept)) {
 			cout << "setting Dept to " << dept << endl;
 			keepRunning = false;
 		}
 		else {
 			cout << "ERROR: Please select from (case sensative) : " << endl;
-			config.printMajors();
+			config.printDept();
 		}
 	}
 

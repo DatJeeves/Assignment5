@@ -8,6 +8,7 @@ Input::Input() {
 	setFacultyLevel("facultyLevels.txt");
 	setStudentLevel("studentLevels.txt");
 	setMajors("majors.txt");
+	setDept("dept.txt");
 }
 
 Input::~Input() {
@@ -70,6 +71,11 @@ void Input::printMajors() {
 	printList(Majors);
 }
 
+void Input::printDept() {
+	// This will print out the departments
+	printList(Dept);
+}
+
 void Input::printList(List<string> myList) {
 	// This will print out the student levels
 	int listSize = myList.GetListSize();
@@ -103,3 +109,22 @@ void Input::setMajors(string fname) {
 	}
 }
 
+void Input::setDept(string fname) {
+	// This will read in the different levels for a faculty from a file
+	// each level is on a new line
+	fstream stream(fname);
+	string line;
+
+	/*Checks whether the file exists and is good to read as well as if it is blank.
+	Next it reads in the first line of the file.*/
+	if (stream.good()) {
+		while (!stream.eof()) {
+			stream >> line;
+			//getline(stream, line);
+			Dept.AddToHead(line);
+		}
+	}
+	else {
+		throw invalid_argument("Invalid file name");
+	}
+}
