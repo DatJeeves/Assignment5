@@ -32,6 +32,17 @@ public:
 	int advisorID;
 	double gpa;
 	std::string major;
+
+	// Overloading operators
+	//  - https://www.tutorialspoint.com/cplusplus/relational_operators_overloading.htm
+	//  - https://www.tutorialspoint.com/cplusplus/cpp_conditional_operator.htm
+	
+	bool operator < (Student& s2) { (getId() < s2.getId()) ?  true :  false; }
+	bool operator > (Student& s2) { (getId() > s2.getId()) ? true : false; }
+	bool operator == (Student& s2) { (getId() == s2.getId()) ? true : false; }
+	bool operator != (Student& s2) { (getId() != s2.getId()) ? true : false; }
+	bool operator >= (Student& s2) { (getId() >= s2.getId()) ? true : false; }
+	bool operator <= (Student& s2) { (getId() <= s2.getId()) ? true : false; }
 	
 	
 };

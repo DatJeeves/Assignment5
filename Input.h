@@ -28,7 +28,8 @@ private:
     void setDept(string fname);
 
     string flFilename = "facultyLevels.txt";
-    string slFilename = "studentLevels.txt";;
+    string slFilename = "studentLevels.txt";
+
 };
 
 #endif

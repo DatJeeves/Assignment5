@@ -750,7 +750,6 @@ void Sim::Start() {
 			ShowFacultyAdvisees();
 			break;
 		case 7:
-
 			AddStudent(mylist);
 			Commit(mylist);
 			break;
