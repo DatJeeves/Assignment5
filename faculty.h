@@ -14,10 +14,6 @@ public:
 	void printDetails();
 	string getCSV();
 	~Faculty();
-	/*Parameters added with different types to overload isEqual.
-	They are not used in the functions, just to distinguish each
-	one.*/
-	bool isEqual(int FacultyID);	
 
 	//Faculty vars
 	string dept;
@@ -26,8 +22,8 @@ public:
 	List<int> advisees;
 	
 	// Overloading operators
-//  - https://www.tutorialspoint.com/cplusplus/relational_operators_overloading.htm
-//  - https://www.tutorialspoint.com/cplusplus/cpp_conditional_operator.htm
+	//  - https://www.tutorialspoint.com/cplusplus/relational_operators_overloading.htm
+	//  - https://www.tutorialspoint.com/cplusplus/cpp_conditional_operator.htm
 
 	bool operator < (Faculty& f2) { (getId() < f2.getId()) ? true : false; }
 	bool operator > (Faculty& f2) { (getId() > f2.getId()) ? true : false; }

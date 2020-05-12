@@ -24,55 +24,6 @@ Student::~Student() {
 
 }
 
-bool Student::isEqual(Student* s) {
-	if (this->getId() == s->getId() && this->getName() == s->getName() && this->getLevel() == s->getLevel() && major == s->major && gpa == s->gpa && advisorID == s->advisorID)
-		return true;
-	else
-		return false;
-}
-
-bool Student::isEqual(int studentID) {
-	if (this->getId() == studentID)
-		return true;
-	else
-		return false;
-}
-
-bool Student::isEqual(int advisorID, int a) {
-	if (this->advisorID == advisorID)
-		return true;
-	else
-		return false;
-}
-
-bool Student::isEqual(double gpa) {
-	if (this->gpa == gpa)
-		return true;
-	else
-		return false;
-}
-
-bool Student::isEqual(std::string name) {
-	if (this->getName() == name)
-		return true;
-	else
-		return false;
-}
-
-bool Student::isEqual(std::string level, int a) {
-	if (this->getLevel() == level)
-		return true;
-	else
-		return false;
-}
-
-bool Student::isEqual(std::string major, bool a) {
-	if (this->major == major)
-		return true;
-	else
-		return false;
-}
-
 void Student::updateAdvisor(int fid) {
 	advisorID = fid;
 }

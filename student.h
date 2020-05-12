@@ -16,13 +16,6 @@ public:
 	/*Parameters added with different types to overload isEqual.
 	They are not used in the functions, just to distinguish each
 	one.*/
-	bool isEqual(Student* s);
-	bool isEqual(int studentID);
-	bool isEqual(int advisorID, int a);
-	bool isEqual(double gpa);
-	bool isEqual(std::string name);
-	bool isEqual(std::string level, int a);
-	bool isEqual(std::string major, bool a);
 
 	void updateAdvisor(int fid);
 	void printDetails();

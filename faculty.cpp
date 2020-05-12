@@ -59,13 +59,6 @@ string Faculty::getCSV() {
 	return csvRec;
 }
 
-bool Faculty::isEqual(int FacultyID) {
-	if (this->getId() == FacultyID)
-		return true;
-	else
-		return false;
-}
-
 
 
 
