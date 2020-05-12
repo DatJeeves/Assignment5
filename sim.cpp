@@ -16,7 +16,6 @@ Sim::Sim() {
 void Sim::SetUpSim() {
 	try {
 			List<string>* mylist = new List<string>;
-			GenStack<string>* myStack = GetNewUndoStack();
 
 			string student;
 			string sid;
@@ -41,7 +40,7 @@ void Sim::SetUpSim() {
 				getline(ss, level, ',');
 				getline(ss, dept, ',');
 				//AddFaculty(mylist, stoi(fid), name, level, dept);
-				AddFaculty(myStack, stoi(fid), name, level, dept);
+				AddFaculty(mylist, stoi(fid), name, level, dept);
 
 			}
 			// Close file
@@ -64,7 +63,7 @@ void Sim::SetUpSim() {
 				getline(ss, major, ',');
 				getline(ss, fid, ',');
 				//AddStudent(mylist, stoi(sid), name, stoi(fid), stod(gpa), level, major);
-				AddStudent(myStack, stoi(sid), name, stoi(fid), 4.0, level, major);
+				AddStudent(mylist, stoi(sid), name, stoi(fid), 4.0, level, major);
 			}
 			// Close file
 			myFile.close();
@@ -205,7 +204,7 @@ void Sim::ChangeAdvisor(List<string>* mylist) {
 	int sid;
 	int fid;
 
-	
+
 	cout << "Which student do you want to change advisor for? " << endl;
 	// Get the student id
 	bool keepRunning = true;
@@ -241,60 +240,10 @@ void Sim::ChangeAdvisor(List<string>* mylist, int sid, int newfid) {
 	Student* s = masterStudent.returnNode(sid)->data;
 	int oldFid;
 	oldFid = s->advisorID;
-	s->advisorID = newfid;
 	string record = (to_string(sid) + "," + to_string(oldFid) + ",");
 
 	DelAdvisee(mylist, sid, oldFid);
 	AddToAdvisor(mylist, sid, newfid);
-	s->advisorID = newfid;
-	AddtoUndo(mylist, "c", 1, record);
-}
-
-void Sim::ChangeAdvisor(GenStack<string>* mylist) {
-	int sid;
-	int fid;
-
-
-	cout << "Which student do you want to change advisor for? " << endl;
-	// Get the student id
-	bool keepRunning = true;
-	while (keepRunning) {
-		sid = GetId("student");
-
-		if (!masterStudent.search(sid)) {
-			cout << "ERROR: Could not find student with Id: " << sid << endl;
-		}
-		else {
-			keepRunning = false;
-		}
-	}
-
-	cout << "Which advisor do you want to change to ? " << endl;
-	// Get the faculty id
-	keepRunning = true;
-	while (keepRunning) {
-		fid = GetId("faculty");
-
-		if (!masterFaculty.search(fid)) {
-			cout << "ERROR: Could not find faculty with Id: " << fid << endl;
-		}
-		else {
-			keepRunning = false;
-		}
-	}
-	ChangeAdvisor(mylist, sid, fid);
-}
-
-void Sim::ChangeAdvisor(GenStack<string>* mylist, int sid, int newfid) {
-
-	Student* s = masterStudent.returnNode(sid)->data;
-	int oldFid;
-	oldFid = s->advisorID;
-	s->advisorID = newfid;
-	string record = (to_string(sid) + "," + to_string(oldFid) + ",");
-
-	DelAdvisee(mylist, sid, oldFid);
-	AddToAdvisor(mylist, sid, newfid);	
 	s->advisorID = newfid;
 	AddtoUndo(mylist, "c", 1, record);
 }
@@ -306,35 +255,12 @@ void Sim::AddToAdvisor(List<string>* mylist, int studentId, int advisorID) {
 	AddtoUndo(mylist, "df", 0, record);
 }
 
-void Sim::AddToAdvisor(GenStack<string>* mylist, int studentId, int advisorID) {
-	Faculty* f = masterFaculty.returnNode(advisorID)->data;
-	f->advisees.AddToHead(studentId);
-	string record = to_string(studentId) + "," + to_string(advisorID) + ",";
-	AddtoUndo(mylist, "df", 0, record);
-}
-
 void Sim::RemoveAdvisee(List<string>* mylist) {
 	// I dont know whats the difference between this and the Change
 	ChangeAdvisor(mylist);
 }
 
-void Sim::RemoveAdvisee(GenStack<string>* mylist) {
-	// I dont know whats the difference between this and the Change
-	ChangeAdvisor(mylist);
-}
-
-void Sim::DelAdvisee(List<string>* mylist,int sid, int fid) {
-	// Del the student from the faculty
-	Faculty* f = masterFaculty.returnNode(fid)->data;
-	if (f->advisees.search(sid)) {
-		string undoRecord =  to_string(sid) + "," + to_string(fid);
-		AddtoUndo(mylist, "af", 0, undoRecord);
-		f->advisees.remove(sid);
-		f->printDetails();
-	}
-}
-
-void Sim::DelAdvisee(GenStack<string>* mylist, int sid, int fid) {
+void Sim::DelAdvisee(List<string>* mylist, int sid, int fid) {
 	// Del the student from the faculty
 	Faculty* f = masterFaculty.returnNode(fid)->data;
 	if (f->advisees.search(sid)) {
@@ -435,102 +361,8 @@ void Sim::AddStudent(List<string>* mylist, int sid, string name, int newfid, dou
 	TreeNode<Student>* studentNode = new TreeNode<Student>(sid, s);
 	masterStudent.insert(studentNode);
 	AddtoUndo(mylist, "d", 1, s->getCSV());
-	AddToAdvisor(mylist,sid, newfid);
-}
-
-void Sim::AddStudent(GenStack<string>* mylist) {
-	int sid;
-
-	cout << "Please enter your Student ID " << endl;
-	// Get the student id
-	bool keepRunning = true;
-	while (keepRunning) {
-		sid = GetId("student");
-
-		if (masterStudent.search(sid)) {
-			cout << "ERROR >> Student with Id: " << sid << " alredy exists" << endl;
-		}
-		else {
-			keepRunning = false;
-		}
-	}
-
-	string name = GetString("Please enter your name : ");
-	cout << "The name given was " << name << endl;
-
-	int newfid;
-	cout << "Please enter your Students Advisor ID ? " << endl;
-	// Get the faculty id
-	keepRunning = true;
-	while (keepRunning) {
-		newfid = GetId("faculty");
-
-		if (!masterFaculty.search(newfid)) {
-			cout << "ERROR: Could not find faculty with Id: " << newfid << endl;
-		}
-		else {
-			keepRunning = false;
-		}
-	}
-
-	string level;
-
-	keepRunning = true;
-	while (keepRunning) {
-		level = GetString("Enter the students level : ");
-
-		if (config.StudentLevels.search(level)) {
-			cout << "setting level to " << level << endl;
-			keepRunning = false;
-		}
-		else {
-			cout << "ERROR: Please select from (case sensative) : " << endl;
-			config.printStudentLevel();
-		}
-	}
-
-	string major;
-	keepRunning = true;
-	while (keepRunning) {
-		major = GetString("Enter the students major : ");
-
-		if (config.Majors.search(major)) {
-			cout << "setting major to " << major << endl;
-			keepRunning = false;
-		}
-		else {
-			cout << "ERROR: Please select from (case sensative) : " << endl;
-			config.printMajors();
-		}
-	}
-
-
-	double gpa;
-	keepRunning = true;
-	while (keepRunning) {
-		gpa = GetDouble("Enter the gpa level : ");
-
-		if (gpa <= 4.0) {
-			cout << "setting level to " << level << endl;
-			keepRunning = false;
-		}
-		else {
-			cout << "ERROR: Please enter between 0.0 to 4.0 : " << endl;
-		}
-	}
-
-	AddStudent(mylist, sid, name, newfid, gpa, level, major);
-}
-
-void Sim::AddStudent(GenStack<string>* mylist, int sid, string name, int newfid, double gpa, string level, string major) {
-	Student* s = new Student;
-	s->setStudent(sid, newfid, gpa, name, level, major);
-	TreeNode<Student>* studentNode = new TreeNode<Student>(sid, s);
-	masterStudent.insert(studentNode);
-	AddtoUndo(mylist, "d", 1, s->getCSV());
 	AddToAdvisor(mylist, sid, newfid);
 }
-
 
 void Sim::AddFaculty(List<string>* mylist) {
 	int fid;
@@ -594,68 +426,6 @@ void Sim::AddFaculty(List<string>* mylist, int fid, string name, string level, s
 	AddtoUndo(mylist, "d", 0, f->getCSV());
 }
 
-void Sim::AddFaculty(GenStack<string>* mylist) {
-	int fid;
-
-	cout << "Please enter your Faculty ID " << endl;
-	// Get the faculty id
-	bool keepRunning = true;
-	while (keepRunning) {
-		fid = GetId("faculty");
-
-		if (masterFaculty.search(fid)) {
-			cout << "ERROR >> Faculty with Id: " << fid << " alredy exists" << endl;
-		}
-		else {
-			keepRunning = false;
-		}
-	}
-
-	string name = GetString("Please enter your name : ");
-	cout << "The name given was " << name << endl;
-
-	string level;
-	keepRunning = true;
-	while (keepRunning) {
-		level = GetString("Enter the faculty level : ");
-
-		if (config.FacultyLevels.search(level)) {
-			cout << "setting level to " << level << endl;
-			keepRunning = false;
-		}
-		else {
-			cout << "ERROR: Please select from (case sensative) : " << endl;
-			config.printFacultyLevel();
-		}
-	}
-
-	string dept; // Is dept the same as majors ?
-	keepRunning = true;
-	while (keepRunning) {
-		dept = GetString("Enter the Dept : ");
-
-		if (config.Dept.search(dept)) {
-			cout << "setting Dept to " << dept << endl;
-			keepRunning = false;
-		}
-		else {
-			cout << "ERROR: Please select from (case sensative) : " << endl;
-			config.printDept();
-		}
-	}
-
-	AddFaculty(mylist, fid, name, level, dept);
-
-}
-
-void Sim::AddFaculty(GenStack<string>* mylist, int fid, string name, string level, string dept) {
-	Faculty* f = new Faculty;
-	f->setFaculty(fid, name, level, dept);
-	TreeNode<Faculty>* facultytNode = new TreeNode<Faculty>(fid, f);
-	masterFaculty.insert(facultytNode);
-	AddtoUndo(mylist, "d", 0, f->getCSV());
-}
-
 void Sim::DelStudentById(List<string>* mylist) {
 	int sid;
 
@@ -693,100 +463,7 @@ void Sim::DelStudentById(List<string>* mylist, int sid) {
 	masterStudent.deleteNode(sid);
 }
 
-void Sim::DelStudentById(GenStack<string>* mylist) {
-	int sid;
-
-	cout << "Please enter your Student ID " << endl;
-	// Get the student id
-	bool keepRunning = true;
-	while (keepRunning) {
-		sid = GetId("student");
-
-		if (!masterStudent.search(sid)) {
-			cout << "ERROR >> Student with Id: " << sid << " does not exist" << endl;
-		}
-		else {
-			keepRunning = false;
-		}
-	}
-
-	DelStudentById(mylist, sid);
-}
-
-void Sim::DelStudentById(GenStack<string>* mylist, int sid) {
-
-	int fid;
-	Student* s = masterStudent.returnNode(sid)->data;
-	fid = s->advisorID;
-
-	// Delete this is just for debug
-	cout << s->getCSV() << endl;;
-
-	// Remove the student from the faculty advisee list
-	DelAdvisee(mylist, sid, fid);
-
-	// Remove the student
-	AddtoUndo(mylist, "a", 1, s->getCSV());
-	masterStudent.deleteNode(sid);
-}
-
 void Sim::DelAdvisorById(List<string>* mylist) {
-	int fid;
-
-	cout << "Please enter your Faculty ID " << endl;
-	
-	bool keepRunning = true;
-	while (keepRunning) {
-		fid = GetId("faculty");
-
-		if (!masterFaculty.search(fid)) {
-			cout << "ERROR >> Faculty with Id: " << fid << " does not exist" << endl;
-		}
-		else {
-			keepRunning = false;
-		}
-	}
-
-	Faculty* f = masterFaculty.returnNode(fid)->data;
-
-	// Check if there are students and we have the last faculty
-	if ((!f->advisees.isEmpty()) && (masterFaculty.getSize() == 1)) {
-		cout << "ERROR: You cant delete this node as it has advisees and there is no other Faculty member to assign to." << endl;
-		return;
-	}
-
-	if (!f->advisees.isEmpty()) {
-		cout << "Need to move students to a new Faculty." << endl;
-		int newFid;
-
-		 keepRunning = true;
-		 while (keepRunning) {
-			 newFid = GetId("faculty");
-			 if (!masterFaculty.search(newFid)) {
-				 cout << "ERROR >> Faculty with Id: " << fid << " does not exist. Please enter one that does." << endl;
-			 }
-			 else {
-				 keepRunning = false;
-			 }
-		 }
-
-		 Faculty* newFaculty = masterFaculty.returnNode(newFid)->data;
-
-		 int tempSid;
-		 string record;
-		 // move them over by looping till we have an empty list
-		 while (!f->advisees.isEmpty()) {
-			 tempSid = f->advisees.GetHead();
-			 ChangeAdvisor(mylist, tempSid, newFid);
-		 }	
-	}
-
-	AddtoUndo(mylist, "a", 0, f->getCSV());
-	// Remove the advisor
-	masterFaculty.deleteNode(fid);
-}
-
-void Sim::DelAdvisorById(GenStack<string>* mylist) {
 	int fid;
 
 	cout << "Please enter your Faculty ID " << endl;
@@ -888,44 +565,33 @@ int Sim::DisplayMenu() {
 	return answer;
 }
 
-void Sim::AddtoUndo(List<string>* mylist,string action, int isStudent, string record) {
-	string undoRecord = action + ",";
-	undoRecord.append(to_string(isStudent) +",");
-	undoRecord.append(record);
+void Sim::AddtoUndo(List<string>* mylist, string action, int isStudent, string record) {
+	string undoRecord = action + "," + to_string(isStudent) + "," + record;
+
 	mylist->AddToHead(undoRecord);
 	// Next line is for debugging if you want to see what undo records are generated
-	// cout << "UNDO REC" << undoRecord << endl;
+	// cout << "UNDO REC" << mylist->GetHead() << "the record should be " << undoRecord <<endl;
+	// mylist->AddToHead(undoRecord);
 }
 
-
-void Sim::AddtoUndo(GenStack<string>* undoStack, string action, int isStudent, string record) {
-	string undoRecord = action + "," + to_string(isStudent) + "," + record;
-	//undoRecord.append(to_string(isStudent) + ",");
-	//undoRecord.append(record);
-	undoStack->push(undoRecord);
-	// Next line is for debugging if you want to see what undo records are generated
-	cout << "UNDO REC" << undoStack->pop() << "therecord should be " << undoRecord <<endl;
-	undoStack->push(undoRecord);
-}
-
-/*void Sim::Commit(List<string>* undoRecords) {
+void Sim::Commit(List<string>* undoRecords) {
 	if (undoRecords->isEmpty()) {
 		// Do nothing
 	}
 	else {
-		undoStack.push(undoRecords);
-	}
-}*/
-
-void Sim::Commit(GenStack<string>* undoRecords) {
-	if (undoRecords->isEmpty()) {
-		// Do nothing
-	}
-	else {
-		undoList2.AddToHead(undoRecords);
-		if (undoList2.GetListSize() > 5) {
+		undoList.AddToHead(undoRecords);
+		cout << "ABOUT TO COMMIT " << endl;
+		int tempsize = undoRecords->GetListSize();
+		string cmd;
+		for (int i = 0; i < tempsize; ++i) {
+			cmd = undoRecords->GetHead();
+			cout << cmd << endl;
+			undoRecords->AddToTail(cmd);
+		}
+		if (undoList.GetListSize() > 5) {
 			// Need to get rid of the older undo as we can only have at most 5
-			(void)undoList2.GetTail();
+			cout << "List is greater than 5 so delete the tail" << endl;
+			(void)undoList.GetTail();
 		} 
 	}
 }
@@ -937,17 +603,17 @@ void Sim::Undo() {
 	string student;
 	string sid;
 	string fid;
+	string input;
 
-	if (!undoStack.isEmpty()) {
-		cout << "Performing an Undo" << endl;
-		mylist = undoStack.pop();
+	if (!undoList.isEmpty()) {
+		cout << "Performing an Undo whose size is " << undoList.GetListSize() << endl;
+		mylist = undoList.GetHead();
 
-		cout << "Undo list zie is " << mylist->GetListSize() << endl;
 		while (!mylist->isEmpty()) {
-			cmd = mylist->popHead();
-
+			cmd = mylist->GetHead();
 			// Next line used for debugging to see the commands
-			// cout << cmd << endl;
+			cout << "The command to perform is " << cmd << endl;
+			cin >> input;
 			// Create a stringstream of the current line
 			stringstream ss(cmd);
 			if (getline(ss, action, ',')) {
@@ -955,12 +621,24 @@ void Sim::Undo() {
 					getline(ss, student, ',');
 					getline(ss, sid, ',');
 					getline(ss, fid, ',');
+					cout << "BEFORE CHANGE mylist is of size " << mylist->GetListSize();
+					
+					int tempsize = mylist->GetListSize();
+					for (int i = 0; i < tempsize; ++i) {
+						cmd = mylist->GetHead();
+						cout << cmd << endl;
+					}
 					ChangeAdvisor(mylist, stoi(sid), stoi(fid));
-					(void)mylist->popHead(); // Removes the change just added
-					(void)mylist->popHead(); // Removes the df just added
-					(void)mylist->popHead(); // Removes the af just added
-					(void)mylist->popHead(); // Removes the df from previous
-					(void)mylist->popHead(); // Removes the af from previous
+					for (int i = 0; i < tempsize; ++i) {
+						cmd = mylist->GetHead();
+						cout << cmd << endl;
+					}
+					cout << "AFTER CHANGE mylist is of size " << mylist->GetListSize();
+					cmd = mylist->GetHead(); // Removes the change just added
+					cmd = mylist->GetHead(); // Removes the df just added
+					cmd = mylist->GetHead(); // Removes the af just added
+					cmd = mylist->GetHead(); // Removes the df from previous
+					cmd = mylist->GetHead(); // Removes the af from previous
 
 				}
 
@@ -969,120 +647,7 @@ void Sim::Undo() {
 					if (student == "1") {
 						getline(ss, sid, ',');
 						DelStudentById(mylist, stoi(sid));
-						(void)mylist->popHead();
-					}
-					else {
-						getline(ss, fid, ',');
-						// Remove the advisor
-						masterFaculty.deleteNode(stoi(fid));
-					}										
-				}
-
-				if (action == "a") {
-					getline(ss, student, ',');
-					if (student == "1") {					
-						getline(ss, sid, ',');
-						string name;
-						getline(ss, name, ',');
-						string gpa;
-						getline(ss, gpa, ',');
-						string level;
-						getline(ss, level, ',');
-						string major;
-						getline(ss, major, ',');
-						getline(ss, fid, ',');
-						AddStudent(mylist, stoi(sid), name, stoi(fid), stod(gpa), level, major);
-						(void)mylist->popHead();
-					}
-					else {
-						getline(ss, fid, ',');
-						string name;
-						getline(ss, name, ',');
-						string level;
-						getline(ss, level, ',');
-						string dept;
-						getline(ss, dept, ',');
-						// Ignore any other after this comma in ss as advisses will be added by student adds
-						AddFaculty(mylist, stoi(fid), name, level, dept);
-						(void)mylist->popHead();
-					}
-				}
-				if (action == "af") {
-					getline(ss, student, ',');
-					if (student == "1") {
-						// Nothing to do
-					}
-					else {
-						getline(ss, sid, ',');
-						getline(ss, fid, ',');
-
-						AddToAdvisor(mylist, stoi(sid), stoi(fid));
-						(void)mylist->popHead();
-					}
-				}	
-				if (action == "df") {
-					getline(ss, student, ',');
-					if (student == "1") {
-						// Nothing to do
-					}
-					else {
-						getline(ss, sid, ',');
-						getline(ss, fid, ',');
-
-						DelAdvisee(mylist, stoi(sid), stoi(fid));
-						(void)mylist->popHead();
-					}
-				}
-			}
-		}
-		if (mylist->isEmpty()) {
-			delete (mylist);
-		}
-	}
-	else {
-		cout << "Nothing to undo" << endl;
-	}
-}
-
-void Sim::Undo2() {
-	GenStack<string>* mylist;
-	string cmd;
-	string action;
-	string student;
-	string sid;
-	string fid;
-
-	if (!undoList2.isEmpty()) {
-		cout << "Performing an Undo" << endl;
-		mylist = undoList2.GetHead();
-
-		while (!mylist->isEmpty()) {
-			cmd = mylist->pop();
-			cout << cmd << endl;
-			// Next line used for debugging to see the commands
-			// cout << cmd << endl;
-			// Create a stringstream of the current line
-			stringstream ss(cmd);
-			if (getline(ss, action, ',')) {
-				if (action == "c") {
-					getline(ss, student, ',');
-					getline(ss, sid, ',');
-					getline(ss, fid, ',');
-					ChangeAdvisor(mylist, stoi(sid), stoi(fid));
-					(void)mylist->pop(); // Removes the change just added
-					(void)mylist->pop(); // Removes the df just added
-					(void)mylist->pop(); // Removes the af just added
-					(void)mylist->pop(); // Removes the df from previous
-					(void)mylist->pop(); // Removes the af from previous
-
-				}
-
-				if (action == "d") {
-					getline(ss, student, ',');
-					if (student == "1") {
-						getline(ss, sid, ',');
-						DelStudentById(mylist, stoi(sid));
-						(void)mylist->pop();
+						cmd = mylist->GetHead();
 					}
 					else {
 						getline(ss, fid, ',');
@@ -1105,7 +670,7 @@ void Sim::Undo2() {
 						getline(ss, major, ',');
 						getline(ss, fid, ',');
 						AddStudent(mylist, stoi(sid), name, stoi(fid), stod(gpa), level, major);
-						(void)mylist->pop();
+						cmd = mylist->GetHead();
 					}
 					else {
 						getline(ss, fid, ',');
@@ -1117,7 +682,7 @@ void Sim::Undo2() {
 						getline(ss, dept, ',');
 						// Ignore any other after this comma in ss as advisses will be added by student adds
 						AddFaculty(mylist, stoi(fid), name, level, dept);
-						(void)mylist->pop();
+						cmd = mylist->GetHead();
 					}
 				}
 				if (action == "af") {
@@ -1130,7 +695,7 @@ void Sim::Undo2() {
 						getline(ss, fid, ',');
 
 						AddToAdvisor(mylist, stoi(sid), stoi(fid));
-						(void)mylist->pop();
+						cmd = mylist->GetHead();
 					}
 				}
 				if (action == "df") {
@@ -1143,7 +708,7 @@ void Sim::Undo2() {
 						getline(ss, fid, ',');
 
 						DelAdvisee(mylist, stoi(sid), stoi(fid));
-						(void)mylist->pop();
+						cmd = mylist->GetHead();
 					}
 				}
 			}
@@ -1160,11 +725,6 @@ void Sim::Undo2() {
 List<string>* Sim::GetNewUndoList() {
 	List<string>* mylist = new List<string>;
 	return mylist;
-}
-
-GenStack<string>* Sim::GetNewUndoStack() {
-	GenStack<string>* tempStack = new GenStack<string>;
-	return tempStack;
 }
 
 void Sim::OutputTables() {
@@ -1193,9 +753,7 @@ void Sim::Start() {
 	bool keepRunning = true;
 
 	while (keepRunning) {
-		//List<string>* mylist = GetNewUndoList();
-		GenStack<string>* mylist = GetNewUndoStack();
-
+		List<string>* mylist = GetNewUndoList();
 		answer = DisplayMenu();
 		cout << "Your entered : " << answer << endl;
 
@@ -1246,7 +804,7 @@ void Sim::Start() {
 			Commit(mylist);
 			break;
 		case 13:
-			Undo2();
+			Undo();
 			break;
 		case 14:
 			OutputTables();

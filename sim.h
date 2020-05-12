@@ -33,50 +33,31 @@ private:
 	void FindFaculty();
 	void ShowFacultyForStudent();
 	void ShowFacultyAdvisees();
-	void ChangeAdvisor(List<string>* mylist);
-	void ChangeAdvisor(List<string>* mylist,int sid, int newfid);
-	void RemoveAdvisee(List<string>* mylist);
-	void AddStudent(List<string>* mylist);
-	void AddStudent(List<string>* mylist, int sid, string naem, int newfid, double gpa, string level, string major);
-	void DelStudentById(List<string>* mylist);
-	void DelStudentById(List<string>* mylist, int sid);
-	void DelAdvisorById(List<string>* mylist);
-	void AddToAdvisor(List<string>* mylist, int studentId, int advisorID);
-	void DelAdvisee(List<string>* mylist,int sid, int fid);
-	void AddFaculty(List<string>* mylist);
-	void AddFaculty(List<string>* mylist, int fid, string name, string level, string dept);
-	void AddtoUndo(List<string>* mylist, string action, int isStudent, string record);
 	void OutputTables();
-	void Undo();
+
+	//methods that operate on the db
 	List<string>* GetNewUndoList();
+	void ChangeAdvisor(List<string>* myList);
+	void ChangeAdvisor(List<string>* myList, int sid, int newfid);
+	void RemoveAdvisee(List<string>* myList);
+	void AddStudent(List<string>* myList);
+	void AddStudent(List<string>* myList, int sid, string naem, int newfid, double gpa, string level, string major);
+	void DelStudentById(List<string>* myList);
+	void DelStudentById(List<string>* myList, int sid);
+	void DelAdvisorById(List<string>* myList);
+	void AddToAdvisor(List<string>* myList, int studentId, int advisorID);
+	void DelAdvisee(List<string>* myList, int sid, int fid);
+	void AddFaculty(List<string>* myList);
+	void AddFaculty(List<string>* myList, int fid, string name, string level, string dept);
+	void AddtoUndo(List<string>* myList, string action, int isStudent, string record);
+	void Undo();
 	void Commit(List<string>* undoRecords);
-
-
-	// New methods
-	GenStack<string>* GetNewUndoStack();
-
-	void ChangeAdvisor(GenStack<string>* mylist);
-	void ChangeAdvisor(GenStack<string>* mylist, int sid, int newfid);
-	void RemoveAdvisee(GenStack<string>* mylist);
-	void AddStudent(GenStack<string>* mylist);
-	void AddStudent(GenStack<string>* mylist, int sid, string naem, int newfid, double gpa, string level, string major);
-	void DelStudentById(GenStack<string>* mylist);
-	void DelStudentById(GenStack<string>* mylist, int sid);
-	void DelAdvisorById(GenStack<string>* mylist);
-	void AddToAdvisor(GenStack<string>* mylist, int studentId, int advisorID);
-	void DelAdvisee(GenStack<string>* mylist, int sid, int fid);
-	void AddFaculty(GenStack<string>* mylist);
-	void AddFaculty(GenStack<string>* mylist, int fid, string name, string level, string dept);
-	void AddtoUndo(GenStack<string>* mylist, string action, int isStudent, string record);
-	void Undo2();
-	void Commit(GenStack<string>* undoRecords);
 
 	BST<TreeNode<Student>> masterStudent;
 	BST<TreeNode<Faculty>> masterFaculty;
 
-	GenStack<List<string>*> undoStack;
-	List<GenStack<string>*> undoList2;
-	GenStack<string>* myUndoStack;
+	List<List<string>*> undoList;
+	//List<string>* myUndoList;
 	int MAXUNDO = 5;
 	Input config;
 };

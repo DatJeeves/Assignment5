@@ -25,7 +25,6 @@ public:
 	T popTail();
 	bool search(T data);
 	void remove(T data);
-	void Copy(List<T> newList);
 	int GetListSize();
 
 	~List();
