@@ -6,9 +6,6 @@
 #include "faculty.h"
 #include "Input.h"
 #include "bst.h"
-#include "undoNode.cpp"
-#include "genstack.cpp"
-
 #include "list.h"
 
 using namespace std;
