@@ -725,7 +725,7 @@ void Sim::Start() {
 	while (keepRunning) {
 		List<string>* mylist = GetNewUndoList();
 		answer = DisplayMenu();
-		cout << "Your entered : " << answer << endl;
+		cout << "You entered : " << answer << endl;
 
 		switch (answer) {
 		case 1:
