@@ -491,7 +491,7 @@ void Sim::DelAdvisorById(List<string>* mylist) {
 			if (!masterFaculty.search(newFid)) {
 				cout << "ERROR >> Faculty with Id: " << fid << " does not exist. Please enter one that does." << endl;
 			}
-			else if (newFid = fid) {
+			else if (newFid == fid) {
 				cout << "ERROR >> Cannot move to the same faculty: " << fid << " . Please enter another one." << endl;
 			}
 			else {
