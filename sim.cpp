@@ -236,12 +236,11 @@ void Sim::ChangeAdvisor(List<string>* mylist) {
 }
 
 void Sim::ChangeAdvisor(List<string>* mylist, int sid, int newfid) {
-
+	int temp = mylist->GetListSize();
 	Student* s = masterStudent.returnNode(sid)->data;
 	int oldFid;
 	oldFid = s->advisorID;
 	string record = (to_string(sid) + "," + to_string(oldFid) + ",");
-
 	DelAdvisee(mylist, sid, oldFid);
 	AddToAdvisor(mylist, sid, newfid);
 	s->advisorID = newfid;
@@ -307,7 +306,6 @@ void Sim::AddStudent(List<string>* mylist) {
 	}
 
 	string level;
-
 	keepRunning = true;
 	while (keepRunning) {
 		level = GetString("Enter the students level : ");
@@ -336,7 +334,6 @@ void Sim::AddStudent(List<string>* mylist) {
 			config.printMajors();
 		}
 	}
-
 
 	double gpa;
 	keepRunning = true;
@@ -447,13 +444,9 @@ void Sim::DelStudentById(List<string>* mylist) {
 }
 
 void Sim::DelStudentById(List<string>* mylist, int sid) {
-
 	int fid;
 	Student* s = masterStudent.returnNode(sid)->data;
 	fid = s->advisorID;
-
-	// Delete this is just for debug
-	cout << s->getCSV() << endl;;
 
 	// Remove the student from the faculty advisee list
 	DelAdvisee(mylist, sid, fid);
@@ -569,8 +562,8 @@ void Sim::AddtoUndo(List<string>* mylist, string action, int isStudent, string r
 	string undoRecord = action + "," + to_string(isStudent) + "," + record;
 
 	mylist->AddToHead(undoRecord);
-	// Next line is for debugging if you want to see what undo records are generated
-	// cout << "UNDO REC" << mylist->GetHead() << "the record should be " << undoRecord <<endl;
+	// Next lines are for debugging if you want to see what undo records are generated
+	// cout << "UNDO REC" << mylist->popHead() << "the record should be " << undoRecord <<endl;
 	// mylist->AddToHead(undoRecord);
 }
 
@@ -580,18 +573,10 @@ void Sim::Commit(List<string>* undoRecords) {
 	}
 	else {
 		undoList.AddToHead(undoRecords);
-		cout << "ABOUT TO COMMIT " << endl;
-		int tempsize = undoRecords->GetListSize();
-		string cmd;
-		for (int i = 0; i < tempsize; ++i) {
-			cmd = undoRecords->GetHead();
-			cout << cmd << endl;
-			undoRecords->AddToTail(cmd);
-		}
 		if (undoList.GetListSize() > 5) {
 			// Need to get rid of the older undo as we can only have at most 5
-			cout << "List is greater than 5 so delete the tail" << endl;
-			(void)undoList.GetTail();
+			cout << "List is greater than 5 so deleting older undo" << endl;
+			(void)undoList.popTail();
 		} 
 	}
 }
@@ -603,17 +588,14 @@ void Sim::Undo() {
 	string student;
 	string sid;
 	string fid;
-	string input;
 
 	if (!undoList.isEmpty()) {
-		cout << "Performing an Undo whose size is " << undoList.GetListSize() << endl;
-		mylist = undoList.GetHead();
+		cout << endl << "Performing an Undo" << endl;
+		mylist = undoList.popHead();
 
 		while (!mylist->isEmpty()) {
-			cmd = mylist->GetHead();
-			// Next line used for debugging to see the commands
-			cout << "The command to perform is " << cmd << endl;
-			cin >> input;
+			cmd = mylist->popHead();
+			
 			// Create a stringstream of the current line
 			stringstream ss(cmd);
 			if (getline(ss, action, ',')) {
@@ -621,24 +603,12 @@ void Sim::Undo() {
 					getline(ss, student, ',');
 					getline(ss, sid, ',');
 					getline(ss, fid, ',');
-					cout << "BEFORE CHANGE mylist is of size " << mylist->GetListSize();
-					
-					int tempsize = mylist->GetListSize();
-					for (int i = 0; i < tempsize; ++i) {
-						cmd = mylist->GetHead();
-						cout << cmd << endl;
-					}
 					ChangeAdvisor(mylist, stoi(sid), stoi(fid));
-					for (int i = 0; i < tempsize; ++i) {
-						cmd = mylist->GetHead();
-						cout << cmd << endl;
-					}
-					cout << "AFTER CHANGE mylist is of size " << mylist->GetListSize();
-					cmd = mylist->GetHead(); // Removes the change just added
-					cmd = mylist->GetHead(); // Removes the df just added
-					cmd = mylist->GetHead(); // Removes the af just added
-					cmd = mylist->GetHead(); // Removes the df from previous
-					cmd = mylist->GetHead(); // Removes the af from previous
+					cmd = mylist->popHead(); // Removes the change just added
+					cmd = mylist->popHead(); // Removes the df just added
+					cmd = mylist->popHead(); // Removes the af just added
+					cmd = mylist->popHead(); // Removes the df from previous
+					cmd = mylist->popHead(); // Removes the af from previous
 
 				}
 
@@ -647,7 +617,7 @@ void Sim::Undo() {
 					if (student == "1") {
 						getline(ss, sid, ',');
 						DelStudentById(mylist, stoi(sid));
-						cmd = mylist->GetHead();
+						cmd = mylist->popHead();
 					}
 					else {
 						getline(ss, fid, ',');
@@ -670,7 +640,7 @@ void Sim::Undo() {
 						getline(ss, major, ',');
 						getline(ss, fid, ',');
 						AddStudent(mylist, stoi(sid), name, stoi(fid), stod(gpa), level, major);
-						cmd = mylist->GetHead();
+						cmd = mylist->popHead();
 					}
 					else {
 						getline(ss, fid, ',');
@@ -682,7 +652,7 @@ void Sim::Undo() {
 						getline(ss, dept, ',');
 						// Ignore any other after this comma in ss as advisses will be added by student adds
 						AddFaculty(mylist, stoi(fid), name, level, dept);
-						cmd = mylist->GetHead();
+						cmd = mylist->popHead();
 					}
 				}
 				if (action == "af") {
@@ -695,7 +665,7 @@ void Sim::Undo() {
 						getline(ss, fid, ',');
 
 						AddToAdvisor(mylist, stoi(sid), stoi(fid));
-						cmd = mylist->GetHead();
+						cmd = mylist->popHead();
 					}
 				}
 				if (action == "df") {
@@ -708,7 +678,7 @@ void Sim::Undo() {
 						getline(ss, fid, ',');
 
 						DelAdvisee(mylist, stoi(sid), stoi(fid));
-						cmd = mylist->GetHead();
+						cmd = mylist->popHead();
 					}
 				}
 			}

@@ -57,7 +57,7 @@ private:
 	BST<TreeNode<Faculty>> masterFaculty;
 
 	List<List<string>*> undoList;
-	//List<string>* myUndoList;
+
 	int MAXUNDO = 5;
 	Input config;
 };

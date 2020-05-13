@@ -141,7 +141,7 @@ void BST<T>::insert(T* node) {
 
 		while (true) {
 			parent = curr;
-			if (node < curr) {
+			if (node->key < curr->key) {
 				//go left				
 				curr = curr->left;
 				if (curr == NULL) {
