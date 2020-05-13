@@ -2,6 +2,8 @@
 #define PERSON_H
 #include <string>
 
+// Base class for a person. Classes that may use this are Student and Faculty 
+
 using namespace std;
 
 class Person {

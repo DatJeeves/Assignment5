@@ -2,6 +2,9 @@
 #include <fstream>
 #include <exception>
 
+// Reads in the configuration files to set up the values for
+// student level, faculty level, department, and majors
+
 using namespace std;
 
 Input::Input() {
@@ -26,14 +29,14 @@ void Input::setFacultyLevel(string fname) {
 	Next it reads in the first line of the file.*/
 	if (stream.good()) {
 		while (!stream.eof()) {
-			stream >> line;
-			//getline(stream, line);
+			getline(stream, line);
 			FacultyLevels.AddToHead(line);
 		}
 	}
 	else {
 		throw invalid_argument ("Invalid file name");
 	}
+	stream.close();
 }
 
 void Input::setStudentLevel(string fname) {
@@ -46,7 +49,7 @@ void Input::setStudentLevel(string fname) {
 	Next it reads in the first line of the file.*/
 	if (stream.good()) {
 		while (!stream.eof()) {
-			stream >> line;
+			stream >> line;	
 			//getline(stream, line);
 			StudentLevels.AddToHead(line);
 		}
@@ -54,6 +57,7 @@ void Input::setStudentLevel(string fname) {
 	else {
 		throw invalid_argument("Invalid file name");
 	}
+	stream.close();
 }
 
 void Input::printStudentLevel() {
@@ -107,6 +111,7 @@ void Input::setMajors(string fname) {
 	else {
 		throw invalid_argument("Invalid file name");
 	}
+	stream.close();
 }
 
 void Input::setDept(string fname) {
@@ -127,4 +132,5 @@ void Input::setDept(string fname) {
 	else {
 		throw invalid_argument("Invalid file name");
 	}
+	stream.close();
 }

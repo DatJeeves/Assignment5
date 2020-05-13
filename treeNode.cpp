@@ -2,6 +2,8 @@
 #include <iostream>
 #include <cstddef>
 
+// Contains the generic implementation of a treeNode for a BST.
+// Note the node contains color to allow it to be used for a self-balancing tree
 using namespace std;
 
 //treenode implementation

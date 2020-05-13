@@ -3,6 +3,9 @@
 #include <string>
 #include "person.cpp"
 
+// Contains the student class with the override in the operators
+// These will compare the two students for equality
+
 using namespace std;
 
 // Inherits a base class Person
